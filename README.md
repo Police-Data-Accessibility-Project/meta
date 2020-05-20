@@ -8,6 +8,7 @@ Scraping:
 
 2. Finding and writing scrapers for other large counties. Prioritize counties with easier to scrape systems first. 
 
+
 Freedom of Information Act Requests:
 
 3. Researching a data request template with all the data we want to ask for in FOIA requests
