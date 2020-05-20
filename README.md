@@ -6,3 +6,10 @@ Initial Goals:
 2. Finding and writing scrapers for other large counties. Prioritize counties with easier to scrape systems first. 
 
 
+3. Researching a data request template with all the data we want to ask for in FOIA requests
+
+4. Submitting FOIA requests and monitoring responses
+
+
+I will be adding tasks to the projects section of this repo, so we can all keep track of them there.
+
