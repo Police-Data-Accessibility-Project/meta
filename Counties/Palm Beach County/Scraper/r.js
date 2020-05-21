@@ -6,7 +6,7 @@ const fs = require('fs')
 
 const RecaptchaPlugin = require('puppeteer-extra-plugin-recaptcha')
 const recaptchaPlugin = RecaptchaPlugin({
-  provider: { id: '2captcha', token: '42d8502b38bc243d5c3a39f83d821a64', throwOnError: true }
+  provider: { id: '2captcha', token: 'Your token', throwOnError: true }
 })
 
 const writer = csvWriter({headers:[
