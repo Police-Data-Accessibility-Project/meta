@@ -18,3 +18,39 @@ Freedom of Information Act Requests:
 
 I will be adding tasks to the projects section of this repo, so we can all keep track of them there.
 
+
+If you are looking to start building a scraper, the XLXS file above has the URLS of all most US counties' public records portals. 
+
+The fields we would like to make sure to collect at a minimum from any scrape are:
+
+_id
+_state
+_county
+CaseNum
+FirstName
+MiddleName
+LastName
+Suffix
+DOB
+Race
+Sex
+ArrestDate
+FilingDate
+OffenseDate
+DivisionName
+CaseStatus
+DefenseAttorney
+PublicDefender
+Judge
+ChargeCount
+ChargeStatute
+ChargeDescription
+ChargeDisposition
+ChargeDispositionDate
+ChargeOffenseDate
+ChargeCitationNum
+ChargePlea
+ChargePleaDate
+ArrestingOfficer
+ArrestingOfficerBadgeNumber
+
