@@ -18,8 +18,7 @@ Initial Goals:
 
 Scraping:
 
-1. Many counties outsource their court records data to third parties. Tyler Technologies is one such vendor. They make the court records portals for what seems like at least a few dozen counties. Finding and building scrapers for portals that are the same for many counties seems like a great early goal. 
-
+1. Many counties outsource their court records data to third party vendors such as Tyler Technologies. Finding and building scrapers for portals that are the same for many counties seems like a great early goal. A list of counties court record systems and their vendors must be made. This will be done collaboratively in [this Google Sheet](https://docs.google.com/spreadsheets/d/1nD4LnjU1b1b9RgQNcn6op-Oj3ZQVcgz-2bUgEU5RVXA/edit). For more details see https://github.com/Police-Data-Accessibility-Project/Police-Data-Accessibility-Project/issues/6.
 2. Finding and writing scrapers for other large counties. Prioritize counties with easier to scrape systems first. 
 
 
