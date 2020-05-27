@@ -1,5 +1,19 @@
 # PoliceAccountabilityProject
 
+Rough Mission Statement (will evolve):
+
+It is my belief that perhaps the single most effective way we can make concrete progress toward this goal is in the realm of data accessibility. Specifically the accessibility of granular, local, county level police citation data.
+
+This however, is a big undertaking, as most counties have clumsy/antiquated systems for searching for and extracting this type of data, and almost none have fully exposed datasets.
+
+Ultimately, the future goal for this initiative is to:
+
+Request (via FOIA) or Scrape, and then clean and aggregate county level police citation data for as many counties as possible, and to most importantly make this data open and free to the public.
+I believe doing so will enable citizen data scientists and data journalists to then make progress on analysis, whereby they will serve the public by looking for and finding trends and anomalies in police behavior, leading to more accountability for both individual police officers and their larger police organizations.
+
+
+
+
 Initial Goals:
 
 Scraping:
