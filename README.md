@@ -1,4 +1,4 @@
-# PoliceAccountabilityProject
+# Police Data Accessibility Project
 
 Rough Mission Statement (will evolve):
 
