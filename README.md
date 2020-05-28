@@ -1,6 +1,6 @@
 # Police Data Accessibility Project
 
-#Rough Mission Statement (will evolve):
+# Rough Mission Statement (will evolve):
 
 It is my belief that perhaps the single most effective way we can make concrete progress toward this goal is in the realm of data accessibility. Specifically the accessibility of granular, local, county level police citation data.
 
@@ -14,7 +14,7 @@ I believe doing so will enable citizen data scientists and data journalists to t
 
 
 
-#Initial Goals:
+# Initial Goals:
 
 Scraping:
 
@@ -24,7 +24,7 @@ Scraping:
 
 For guidelines to contributing to scraping, please see https://github.com/Police-Data-Accessibility-Project/Police-Data-Accessibility-Project/blob/master/CONTRIBUTING.md
 
-#Freedom of Information Act Requests:
+# Freedom of Information Act Requests:
 
 3. Researching a data request template with all the data we want to ask for in FOIA requests
 
@@ -36,7 +36,7 @@ I will be adding tasks to the projects section of this repo, so we can all keep 
 
 If you are looking to start building a scraper, the csv file above has the URLS of all most US counties' public records portals. 
 
-#The fields we would like to make sure to collect at a minimum from any scrape are:
+# The fields we would like to make sure to collect at a minimum from any scrape are:
 
 _id
 _state
