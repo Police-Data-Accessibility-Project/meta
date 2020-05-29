@@ -26,7 +26,7 @@ Given the nature of this project, there are some extremely important guidelines 
 1. Your scraper must be anonymizing data that it gathers, removing identifiable information to prevent disclosure of names of arresting officers or cited citizens.
 2. Your scraper must NOT blast websites to the point of denying service to other users or causing the site to show degraded performance. It cannot be overstated how important it is to be gentle on websites we are collecting data from. There are potential legal implications with taking down government-hosted websites. Your scraper should not produce more requests to a website than a real human would. Our general guideline is that you should not be making more than one request per second. {I will be seeking extra input on this value before we post this to the GH}
 3. Your scraper must comply with the Terms of Service of the website you are scraping. You are expected to read and understand the TOS of websites you are building scrapers for, and understand that our Github admins will also be reviewing the TOS to ensure your scraper does not violate them. 
-4. For now, while we are still examining the legality of bypassing Captchas, please do not write scrapers that bypass them either programatically or with captcha solving services. We will have further guidance on this soon. 
+4. For now, while we are still examining the legality of bypassing Captchas and authentication pages, please do not write scrapers that bypass them either programatically or with captcha solving services. We will have further guidance on this soon, but will not accept code designed to bypass legitimate authentication and spam prevention services. 
 
 ## Minimum Requirements for Submission
 
