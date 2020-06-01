@@ -38,6 +38,7 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 
 # The fields we would like to make sure to collect at a minimum from any scrape are:
 
+```
 _id
 _state
 _county
@@ -68,4 +69,4 @@ ChargePlea
 ChargePleaDate
 ArrestingOfficer
 ArrestingOfficerBadgeNumber
-
+```
