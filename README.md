@@ -40,13 +40,15 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 
 # The fields we would like to make sure to collect at a minimum from any scrape are:
 
+**For anything labeled PII: do not scrape personally identifiable information yet. We are consulting with lawyers on implications for this, but intend to do so once given the green light. 
+
 * _id
 * _state
 * _county
 * CaseNum
-* FirstName
-* MiddleName
-* LastName
+* FirstName (PII)
+* MiddleName (PII)
+* LastName (PII)
 * Suffix
 * DOB
 * Race
@@ -56,9 +58,9 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 * OffenseDate
 * DivisionName
 * CaseStatus
-* DefenseAttorney
-* PublicDefender
-* Judge
+* DefenseAttorney (PII)
+* PublicDefender (PII)
+* Judge (PII)
 * ChargeCount
 * ChargeStatute
 * ChargeDescription
@@ -68,6 +70,8 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 * ChargeCitationNum
 * ChargePlea
 * ChargePleaDate
-* ArrestingOfficer
-* ArrestingOfficerBadgeNumber
+* ArrestingOfficer (PII
+* ArrestingOfficerBadgeNumber.  (PII)
+
+
 
