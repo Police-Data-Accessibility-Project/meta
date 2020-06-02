@@ -45,7 +45,7 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 * _id
 * _state
 * _county
-* CaseNum
+* CaseNum (PII, for now)
 * FirstName (PII)
 * MiddleName (PII)
 * LastName (PII)
