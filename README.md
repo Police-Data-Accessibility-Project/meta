@@ -70,7 +70,7 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 * ChargeCitationNum
 * ChargePlea
 * ChargePleaDate
-* ArrestingOfficer (PII
+* ArrestingOfficer (PII)
 * ArrestingOfficerBadgeNumber.  (PII)
 
 
