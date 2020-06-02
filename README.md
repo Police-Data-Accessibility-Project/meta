@@ -40,34 +40,34 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 
 # The fields we would like to make sure to collect at a minimum from any scrape are:
 
-_id
-_state
-_county
-CaseNum
-FirstName
-MiddleName
-LastName
-Suffix
-DOB
-Race
-Sex
-ArrestDate
-FilingDate
-OffenseDate
-DivisionName
-CaseStatus
-DefenseAttorney
-PublicDefender
-Judge
-ChargeCount
-ChargeStatute
-ChargeDescription
-ChargeDisposition
-ChargeDispositionDate
-ChargeOffenseDate
-ChargeCitationNum
-ChargePlea
-ChargePleaDate
-ArrestingOfficer
-ArrestingOfficerBadgeNumber
+* _id
+* _state
+* _county
+* CaseNum
+* FirstName
+* MiddleName
+* LastName
+* Suffix
+* DOB
+* Race
+* Sex
+* ArrestDate
+* FilingDate
+* OffenseDate
+* DivisionName
+* CaseStatus
+* DefenseAttorney
+* PublicDefender
+* Judge
+* ChargeCount
+* ChargeStatute
+* ChargeDescription
+* ChargeDisposition
+* ChargeDispositionDate
+* ChargeOffenseDate
+* ChargeCitationNum
+* ChargePlea
+* ChargePleaDate
+* ArrestingOfficer
+* ArrestingOfficerBadgeNumber
 
