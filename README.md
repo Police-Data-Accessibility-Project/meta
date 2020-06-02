@@ -1,5 +1,7 @@
 # Police Data Accessibility Project
 
+# Join the Slack: https://join.slack.com/t/policeaccessibility/shared_invite/zt-eji7fh9w-slynNpPJtcGLUUhbhBmbTg
+
 # Rough Mission Statement (will evolve):
 
 It is my belief that perhaps the single most effective way we can make concrete progress toward this goal is in the realm of data accessibility. Specifically the accessibility of granular, local, county level police citation data.
