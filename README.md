@@ -1,5 +1,7 @@
 # Police Data Accessibility Project
 
+# Join the Slack: https://join.slack.com/t/policeaccessibility/shared_invite/zt-eji7fh9w-slynNpPJtcGLUUhbhBmbTg
+
 # Rough Mission Statement (will evolve):
 
 It is my belief that perhaps the single most effective way we can make concrete progress toward this goal is in the realm of data accessibility. Specifically the accessibility of granular, local, county level police citation data.
@@ -38,35 +40,36 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 
 # The fields we would like to make sure to collect at a minimum from any scrape are:
 
-```
-_id
-_state
-_county
-CaseNum
-FirstName
-MiddleName
-LastName
-Suffix
-DOB
-Race
-Sex
-ArrestDate
-FilingDate
-OffenseDate
-DivisionName
-CaseStatus
-DefenseAttorney
-PublicDefender
-Judge
-ChargeCount
-ChargeStatute
-ChargeDescription
-ChargeDisposition
-ChargeDispositionDate
-ChargeOffenseDate
-ChargeCitationNum
-ChargePlea
-ChargePleaDate
-ArrestingOfficer
-ArrestingOfficerBadgeNumber
-```
+**For anything labeled PII: do not scrape personally identifiable information yet. We are consulting with lawyers on implications for this, but intend to do so once given the green light. 
+
+* _id
+* _state
+* _county
+* CaseNum
+* FirstName (PII)
+* MiddleName (PII)
+* LastName (PII)
+* Suffix
+* DOB
+* Race
+* Sex
+* ArrestDate
+* FilingDate
+* OffenseDate
+* DivisionName
+* CaseStatus
+* DefenseAttorney (PII)
+* PublicDefender (PII)
+* Judge (PII)
+* ChargeCount
+* ChargeStatute
+* ChargeDescription
+* ChargeDisposition
+* ChargeDispositionDate
+* ChargeOffenseDate
+* ChargeCitationNum
+* ChargePlea
+* ChargePleaDate
+* ArrestingOfficer (PII)
+* ArrestingOfficerBadgeNumber.  (PII)
+
