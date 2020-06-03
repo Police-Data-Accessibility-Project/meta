@@ -25,7 +25,7 @@ Bay County uses a Benchmark portal by Pioneer Technology .
 
 8. Verify tesseract is installed in PATH by opening cmd and entering `tesseract`.
 
-9. `python Scraper.py [args]` (See below for args) 
+9. `python3 Scraper.py [args]` (See below for args) 
 
 ## Args
 
