@@ -43,6 +43,10 @@ We will be adding tasks to the projects section of this repo, so we can all keep
 
 If you are looking to start building a scraper, the csv file above has the URLS of all most US counties' public records portals. 
 
+### The datasets we have already collected or gained access to are:
+
+This [Google Sheet](https://docs.google.com/spreadsheets/d/1yyjYV1BLFuLy32CW66zApuEWDSFrR9Dw9y49MU7dxcQ/edit) will track datasets created by other open projects or that members of PDAP have acquired.
+
 ### The fields we would like to make sure to collect at a minimum from any scrape are:
 
 **For anything labeled PII: do not scrape personally identifiable information yet. We are consulting with lawyers on implications for this, but intend to do so once given the green light. 
