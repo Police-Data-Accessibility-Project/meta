@@ -8,17 +8,18 @@ import re
 class CaptchaSolver:
     """Class for solving Captchas used on Benchmark-based Portals"""
 
-    def __init__(self, driver):
+    def __init__(self, driver, outdir=None):
         self.driver = driver
+        self.outdir = outdir or os.path.join(os.getcwd(), 'captcha')
+        self.correct_dir = os.path.join(self.outdir, 'correct')
+        self.incorrect_dir = os.path.join(self.outdir, 'incorrect')
         self.current_captcha = None
         self.first_number = None
         self.second_number = None
 
         # Create necessary folders for saving correct/incorrect captchas
-        if not os.path.exists(os.path.join('captcha', 'incorrect')):
-            os.makedirs(os.path.join('captcha', 'incorrect'))
-        if not os.path.exists(os.path.join('captcha', 'correct')):
-            os.makedirs(os.path.join('captcha', 'correct'))
+        os.makedirs(self.correct_dir, exist_ok=True)
+        os.makedirs(self.incorrect_dir, exist_ok=True)
 
     def solve_captcha(self, captcha_buffer):
         """
@@ -89,15 +90,15 @@ class CaptchaSolver:
         """
         counter = 1
         filename = 'captcha{}.png'
-        while os.path.isfile(os.path.join('captcha', 'incorrect', filename.format(counter))):
+        while os.path.isfile(os.path.join(self.incorrect_dir, filename.format(counter))):
             counter += 1
 
-        cv2.imwrite(os.path.join('captcha', 'incorrect', filename.format(counter)), self.current_captcha)
+        cv2.imwrite(os.path.join(self.incorrect_dir, filename.format(counter)), self.current_captcha)
 
     def notify_last_captcha_success(self):
         """
         If the last captcha was correctly solved, the Scraper should call this function to save the correct captcha
         """
         cv2.imwrite(
-            os.path.join('captcha', 'correct', '{}+{}=.png'.format(self.first_number, self.second_number)),
+            os.path.join(self.correct_dir, '{}+{}=.png'.format(self.first_number, self.second_number)),
             self.current_captcha)
