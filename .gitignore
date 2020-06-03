@@ -143,3 +143,69 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+
+# Vim temp files
+## swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+## session
+Session.vim
+## temporary
+.netrwhist
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Emacs temp files
+\#*\#
+/.emacs.desktop
+/.emacs.desktop.lock
+*.elc
+auto-save-list
+tramp
+.\#*
+
+## Org-mode
+.org-id-locations
+*_archive
+
+## flymake-mode
+*_flymake.*
+
+## eshell files
+/eshell/history
+/eshell/lastdir
+
+## elpa packages
+/elpa/
+
+## reftex files
+*.rel
+
+## AUCTeX auto folder
+/auto/
+
+## cask packages
+.cask/
+dist/
+
+## Flycheck
+flycheck_*.el
+
+## server auth directory
+/server/
+
+## projectiles files
+.projectile
+
+## directory configuration
+.dir-locals.el
