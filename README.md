@@ -27,15 +27,15 @@ I believe doing so will enable citizen data scientists and data journalists to t
 
 1. Many counties outsource their court records data to third party vendors such as Tyler Technologies. Finding and building scrapers for portals that are the same for many counties seems like a great early goal. A list of counties court record systems and their vendors must be made. This will be done collaboratively in [this Google Sheet](https://docs.google.com/spreadsheets/d/1nD4LnjU1b1b9RgQNcn6op-Oj3ZQVcgz-2bUgEU5RVXA/edit). For more details see https://github.com/Police-Data-Accessibility-Project/Police-Data-Accessibility-Project/issues/6.
 
-2. Finding and writing scrapers for other large counties. Prioritize counties with easier to scrape systems first. 
+1. Finding and writing scrapers for other large counties. Prioritize counties with easier to scrape systems first. 
 
 For guidelines to contributing to scraping, please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### Freedom of Information Act Requests:
 
-3. Researching a data request template with all the data we want to ask for in FOIA requests
+1. Researching a data request template with all the data we want to ask for in FOIA requests
 
-4. Submitting FOIA requests and monitoring responses
+1. Submitting FOIA requests and monitoring responses
 
 
 We will be adding tasks to the projects section of this repo, so we can all keep track of them there.
@@ -50,10 +50,10 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 * _id
 * _state
 * _county
-* CaseNum (PII, for now)
-* FirstName (PII)
-* MiddleName (PII)
-* LastName (PII)
+* CaseNum (**PII**, for now)
+* FirstName (**PII**)
+* MiddleName (**PII**)
+* LastName (**PII**)
 * Suffix
 * DOB
 * Race
@@ -63,9 +63,9 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 * OffenseDate
 * DivisionName
 * CaseStatus
-* DefenseAttorney (PII)
-* PublicDefender (PII)
-* Judge (PII)
+* DefenseAttorney (**PII**)
+* PublicDefender (**PII**)
+* Judge (**PII**)
 * ChargeCount
 * ChargeStatute
 * ChargeDescription
@@ -75,6 +75,6 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 * ChargeCitationNum
 * ChargePlea
 * ChargePleaDate
-* ArrestingOfficer (PII)
-* ArrestingOfficerBadgeNumber.  (PII)
+* ArrestingOfficer (**PII**)
+* ArrestingOfficerBadgeNumber.  (**PII**)
 
