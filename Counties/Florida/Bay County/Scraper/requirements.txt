@@ -1,0 +1,6 @@
+selenium
+getopt
+opencv-python
+pytesseract
+pytest
+pathvalidate
