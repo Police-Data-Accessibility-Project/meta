@@ -31,7 +31,7 @@ Bay County uses a Benchmark portal by Pioneer Technology .
 
 |Short|Long|Default Value|Description|
 |---|---|---|---|
-|`-p`|`--portal-home`|[Portal link](https://court.baycoclerk.com/BenchmarkWeb2/Home.aspx/Search)|Set homepage for county portal.|
+|`-p`|`--portal-base`|https://court.baycoclerk.com/BenchmarkWeb2/|Base URL for the Benchmark-based portal|
 |`-s`|`--state`|FL|Postal code for state being scraped.
 |`-c`|`--county`|Bay|County being scraped.
 |`-y`|`--start-year`|2000|Earliest year to scrape as 4-digit year.|

@@ -15,7 +15,7 @@ import utils.ScraperUtils as ScraperUtils
 from utils.ScraperUtils import Record, Charge
 
 settings = {
-    'portal-home': 'https://court.baycoclerk.com/BenchmarkWeb2/Home.aspx/Search',
+    'portal-base': 'https://court.baycoclerk.com/BenchmarkWeb2/',
     'state-code': 'FL',
     'county': 'Bay',
     'start-year': 2000,
@@ -33,19 +33,8 @@ output_attachments = os.path.join(os.getcwd(), 'attachments')
 output_file = os.path.join(os.getcwd(), settings['output'])
 
 ffx_profile = webdriver.FirefoxOptions()
-# Allows Selenium to download to non-default location
-ffx_profile.set_preference('browser.download.folderList', 2)
-ffx_profile.set_preference('browser.download.dir', output_attachments)
-# Disable PDF browser plugin
-ffx_profile.set_preference('plugin.disable_full_page_plugin_for_types', 'application/pdf')
-ffx_profile.set_preference('pdfjs.disabled', True)
-ffx_profile.set_preference('pdfjs.enabledCache.state', False)
-# Enable autosave for PDFs.
-ffx_profile.set_preference('browser.download.manager.showWhenStarting', False)
-ffx_profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/pdf')
-ffx_profile.set_preference('browser.helperApps.alwaysAsk.force', False)
-# Disable animation
-ffx_profile.set_preference('browser.download.manager.showWhenStarting', False)
+# Automatically dismiss unexpected alerts.
+ffx_profile.set_capability('unexpectedAlertBehaviour', 'dismiss')
 driver = webdriver.Firefox(options=ffx_profile)
 captcha_solver = CaptchaSolver(driver)
 
@@ -54,14 +43,14 @@ def main():
     # Parse Arguments
     args = sys.argv[1:]
     short_args = 'p:s:c:y:e:t:pc:o:auv'
-    long_args = ['portal-home=', 'state=', 'county', 'start-year=', 'end-year=', 'missing-thresh=', 'collect-pii',
+    long_args = ['portal-base=', 'state=', 'county', 'start-year=', 'end-year=', 'missing-thresh=', 'collect-pii',
                  'connect-thresh=', 'output=', 'save-attachments','solve-captchas', 'verbose']
 
     try:
         args, vals = getopt.getopt(args, short_args, long_args)
         for arg, val in args:
-            if arg in ('p', '--portal-home'):
-                settings['portal-home'] = val
+            if arg in ('p', '--portal-base'):
+                settings['portal-base'] = val
             elif arg in ('s', '--state'):
                 settings['state-code'] = val
             elif arg in ('c', '--county'):
@@ -205,17 +194,11 @@ def scrape_record(case_number):
         Judge = summary_table_col1[0].text.strip()
 
         # Download docket attachments.
+        # Todo: This part could be parallelised to save attachments considerably faster.
         if settings['save-attachments']:
             for attachment_link in docket_attachments:
                 attachment_docket_text = attachment_link.find_element_by_xpath('./../../td[3]').text.strip()
-                # Download will start in a new
-                main_window = driver.current_window_handle
-                ScraperUtils.save_download(output_attachments, attachment_link.click,
-                                           '{}-{}'.format(case_number, attachment_docket_text))
-                driver.switch_to.window(driver.window_handles[-1])
-                driver.close()
-                driver.switch_to.window(main_window)
-
+                ScraperUtils.save_attached_pdf(driver, output_attachments, '{}-{}'.format(case_number, attachment_docket_text), settings['portal-base'], attachment_link, 20, settings['verbose'])
     else:
         DefenseAttorney = []
         PublicDefender = []
@@ -311,8 +294,8 @@ def search_portal(case_number):
     :param case_number: Case to search
     :return: True if a valid case was found, False if not.
     """
-    # Load portal homepage
-    load_page(settings['portal-home'], 'Search')
+    # Load portal search page
+    load_page('{}/Home.aspx/Search'.format(settings['portal-base']), 'Search')
     # Give some time for the captcha to load, as it does not load instantly.
     time.sleep(0.8)
 
@@ -399,7 +382,7 @@ def select_case_input():
             if i == settings['connect-thresh'] - 1:
                 raise RuntimeError('Portal homepage could not be loaded')
             else:
-                load_page(settings['portal-home'], 'Search')
+                load_page('{}/Home.aspx/Search'.format(settings['portal-base']), 'Search')
 
     case_selector = driver.find_element_by_xpath(
         '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/div/div[1]/div[1]/div/div[2]/label[1]/input')
