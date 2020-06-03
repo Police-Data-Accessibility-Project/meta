@@ -152,10 +152,14 @@ def scrape_record(case_number):
     :param case_number: The current case's case number.
     """
     # Wait for court summary to load
-    try:
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'summaryAccordion')))
-    except TimeoutException:
-        raise ValueError('Summary details did not load.')
+    for i in range(settings['connect-thresh']):
+        try:
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'summaryAccordion')))
+        except TimeoutException:
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Summary details did not load.')
+            else:
+                driver.refresh()
 
     # Get relevant page content
     summary_table_col1 = driver.find_elements_by_xpath('//*[@id="summaryAccordionCollapse"]/table/tbody/tr/td[1]/dl/dd')
@@ -163,10 +167,14 @@ def scrape_record(case_number):
     summary_table_col3 = driver.find_elements_by_xpath('//*[@id="summaryAccordionCollapse"]/table/tbody/tr/td[3]/dl/dd')
 
     # Wait for court dockets to load
-    try:
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'gridDocketsView')))
-    except TimeoutException:
-        raise ValueError('Dockets did not load.')
+    for i in range(settings['connect-thresh']):
+        try:
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'gridDocketsView')))
+        except TimeoutException:
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Dockets did not load.')
+            else:
+                driver.refresh()
 
     charges_table = driver.find_elements_by_xpath('//*[@id="gridCharges"]/tbody/tr')
     docket_public_defender = driver.find_elements_by_xpath(
@@ -370,12 +378,13 @@ def search_portal(case_number):
                 # Case number search did find a court case.
                 return True
         except TimeoutException:
-            search_portal(case_number)
-
-    # If this is reached, the search could not be performed in 'connect-thresh' tries.
-    raise ValueError(
-        'Page could not be loaded after {} attempts, or unexpected page title: {}'.format(settings['connect-thresh'],
-                                                                                          driver.title))
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError(
+                    'Case page could not be loaded after {} attempts, or unexpected page title: {}'.format(
+                        settings['connect-thresh'],
+                        driver.title))
+            else:
+                search_portal(case_number)
 
 
 def select_case_input():
@@ -387,7 +396,10 @@ def select_case_input():
         try:
             WebDriverWait(driver, 5).until(EC.text_to_be_present_in_element((By.ID, 'title'), 'Case Search'))
         except TimeoutException:
-            load_page(settings['portal-home'], 'Search')
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Portal homepage could not be loaded')
+            else:
+                load_page(settings['portal-home'], 'Search')
 
     case_selector = driver.find_element_by_xpath(
         '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/div/div[1]/div[1]/div/div[2]/label[1]/input')
@@ -425,10 +437,10 @@ def load_page(url, expectedTitle):
             else:
                 raise ValueError('Unexpected type passed to load_page. Allowed types are str, list[str]')
         except TimeoutException:
-            driver.get(url)
-
-    print('Page {} could not be loaded after {} attempts. Check connection.'.format(url, settings['connect-thresh']),
-          file=sys.stderr)
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Page {} could not be loaded after {} attempts. Check connection.'.format(url, settings['connect-thresh']))
+            else:
+                driver.get(url)
 
 
 if __name__ == '__main__':
