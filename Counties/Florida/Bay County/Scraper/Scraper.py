@@ -255,13 +255,24 @@ def scrape_record(case_number):
     ArrestingOfficer = None  # Can't be found on this portal
     ArrestingOfficerBadgeNumber = None  # Can't be found on this portal
 
+    profile_link = driver.find_element_by_xpath('//*[@id="gridParties"]/tbody/tr[1]/td[2]/div[1]/a').get_attribute(
+        'href')
+    load_page(profile_link, 'Party Details:')
+
+    Suffix = None
+    DOB = None  # This portal has DOB as N/A for every defendent
+    Race = driver.find_element_by_xpath(
+        '//*[@id="fd-table-2"]/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[2]/table/tbody/tr[7]/td[2]').text.strip()
+    Sex = driver.find_element_by_xpath(
+        '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[2]/table/tbody/tr[6]/td[2]').text.strip()
+    FirstName = None
+    MiddleName = None
+    LastName = None
+    PartyID = None
+
     # Only collect PII if configured
     if settings['collect-pii']:
         # Navigate to party profile
-        profile_link = driver.find_element_by_xpath('//*[@id="gridParties"]/tbody/tr[1]/td[2]/div[1]/a').get_attribute(
-            'href')
-        load_page(profile_link, 'Party Details:')
-
         full_name = driver.find_element_by_xpath(
             '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[2]/table/tbody/tr[1]/td[2]').text.strip()
         MiddleName = None
@@ -276,18 +287,6 @@ def scrape_record(case_number):
             FirstName = full_name
         PartyID = driver.find_element_by_xpath(
             '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[2]/table/tbody/tr[8]/td[2]').text.strip()  # PartyID is a field within the portal system to uniquely identify defendants
-    else:
-        FirstName = None
-        MiddleName = None
-        LastName = None
-        PartyID = None
-
-    Suffix = None
-    DOB = None  # This portal has DOB as N/A for every defendent
-    Race = driver.find_element_by_xpath(
-        '//*[@id="fd-table-2"]/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[2]/table/tbody/tr[7]/td[2]').text.strip()
-    Sex = driver.find_element_by_xpath(
-        '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/table[2]/tbody/tr/td[2]/table/tbody/tr[6]/td[2]').text.strip()
 
     record = Record(_id, _state, _county, case_number, CaseNum, AgencyReportNum, PartyID, FirstName, MiddleName,
                     LastName, Suffix, DOB, Race, Sex, ArrestDate, FilingDate, OffenseDate, DivisionName, CaseStatus,
