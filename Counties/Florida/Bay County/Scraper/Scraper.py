@@ -319,11 +319,11 @@ def search_portal(case_number):
         try:
             # Get Captcha
             captcha_image_elem = driver.find_element_by_xpath(
-                '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/div/div[3]/form/img')
+                '//*/img[@alt="Captcha"]')
             captcha_buffer = captcha_image_elem.screenshot_as_png
             captcha_answer = captcha_solver.solve_captcha(captcha_buffer)
             captcha_textbox = driver.find_element_by_xpath(
-                '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/div/div[3]/form/input[2]')
+                '//*/input[@name="captcha"]')
             captcha_textbox.click()
             captcha_textbox.send_keys(captcha_answer)
         except NoSuchElementException:
@@ -350,7 +350,7 @@ def search_portal(case_number):
                 try:
                     # Check if 'Invalid Captcha' dialog is showing
                     driver.find_element_by_xpath(
-                        '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/div/div[3]/form/div')
+                        '//div[@class="alert alert-error"]')
                     print("Captcha was solved incorrectly")
                     captcha_solver.notify_last_captcha_fail()
                 except NoSuchElementException:
@@ -390,7 +390,7 @@ def select_case_input():
             load_page(settings['portal-home'], 'Search')
 
     case_selector = driver.find_element_by_xpath(
-        '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/div/div[1]/div[1]/div/div[2]/label[1]/input')
+        '//*/input[@searchtype="CaseNumber"]')
     case_selector.click()
     try:
         case_input = driver.find_element_by_id('caseNumber')
@@ -398,7 +398,7 @@ def select_case_input():
     except ElementNotInteractableException:
         # Sometimes the caseNumber box does not appear, this is resolved by clicking to another radio button and back.
         name_selector = driver.find_element_by_xpath(
-            '//*[@id="mainTableContent"]/tbody/tr/td/table/tbody/tr[2]/td[2]/div/div[1]/div[1]/div/div[1]/label[1]/input')
+            '//*/input[@searchtype="Name"]')
         name_selector.cick()
         case_selector.click()
         case_input = driver.find_element_by_id('caseNumber')
