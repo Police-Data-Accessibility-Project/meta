@@ -26,7 +26,8 @@ settings = {
     'output': 'bay-county-scraped.csv',
     'save-attachments': 'none',
     'solve-captchas': False,
-    'verbose': False
+    'verbose': False,
+    'max-records': 0,
 }
 
 output_attachments = os.path.join(os.getcwd(), 'attachments')
@@ -42,9 +43,9 @@ captcha_solver = CaptchaSolver(driver)
 def main():
     # Parse Arguments
     args = sys.argv[1:]
-    short_args = 'p:s:c:y:e:t:pc:o:a:uv'
+    short_args = 'p:s:c:y:e:t:pc:o:a:uv:m'
     long_args = ['portal-base=', 'state=', 'county', 'start-year=', 'end-year=', 'missing-thresh=', 'collect-pii',
-                 'connect-thresh=', 'output=', 'save-attachments=','solve-captchas', 'verbose']
+                 'connect-thresh=', 'output=', 'save-attachments=','solve-captchas', 'verbose', 'max-records=']
 
     try:
         args, vals = getopt.getopt(args, short_args, long_args)
@@ -79,6 +80,12 @@ def main():
                 settings['solve-captchas'] = True
             elif arg in ('-v', '--verbose'):
                 settings['verbose'] = True
+            elif arg in ('-m', '--max-records'):
+                if int(val) < 0:
+                    raise ValueError(
+                            f'--max-records value is less than zero ({val}); '
+                            'set to zero for unlimited')
+                settings['max-records'] = int(val)
             else:
                 raise ValueError('Invalid argument {} provided to Scraper.'.format(arg))
     except getopt.error as err:
@@ -111,6 +118,7 @@ def begin_scrape():
         continuing = False
         pass
 
+    record_count = 0
     # Scrape from the most recent year to the oldest.
     for year in range(settings['end-year'], settings['start-year'], -1):
         if continuing:
@@ -124,11 +132,17 @@ def begin_scrape():
         record_missing_count = 0
         # Increment case numbers until the threshold missing cases is met, then advance to the next year.
         while record_missing_count < settings['missing-thresh']:
+            mr = settings['max-records']
+            #TODO(mcsaucy): come up with a more elegant approach to stopping.
+            if (mr and record_count >= mr):
+                print("Reached max-records. Stopping.")
+                return
             # Generate the case number to scrape
             case_number = f'{YY:02}' + f'{N:06}'
 
             search_result = search_portal(case_number)
             if search_result:
+                record_count += len(search_result)
                 record_missing_count = 0
                 # if multiple associated cases are found,
                 # scrape all of them

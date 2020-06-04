@@ -6,7 +6,7 @@ import cv2
 @pytest.fixture(scope='module')
 def testdatadir(request):
     # Get a py.path.local, which is a bit friendlier to work with.
-    return request.fspath.join('..')
+    return request.fspath.join('..').join('testdata')
 
 class TestCaptchaSolver:
 
