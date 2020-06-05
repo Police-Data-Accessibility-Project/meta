@@ -70,6 +70,18 @@ class TestScraperUtils:
         filename_invalid_chars = 't<>:e"/s\\t|?n*ame'
         assert ScraperUtils.parse_out_path('', filename_invalid_chars, 'pdf') == os.path.join('', 'testname.pdf')
 
+    def test_parse_out_path_valid(self):
+        # Function should not affect valid length filenames and paths.
+        normal_filename = 'document'
+        parsedPath = ScraperUtils.parse_out_path('C:\\Example\Path', normal_filename, 'pdf')
+        assert parsedPath == os.path.join('C:\\Example\Path', '{}.{}'.format(normal_filename, 'pdf'))
+
+    def test_parse_out_path_filename_extension_shortening(self):
+        # 252 characters long, but with the .pdf extension it becomes 256 characters long - one too many.
+        filename = '012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901'
+        parsed_filename = ScraperUtils.parse_out_path('', filename, 'pdf')
+        assert parsed_filename == '{}.{}'.format(filename[:-1], 'pdf')
+
     def test_parse_out_path_shortening(self):
         # 260 characters long before the extension. This is an invalid filename in Windows.
         filename_too_long = '01234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456789'

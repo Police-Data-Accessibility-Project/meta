@@ -2,10 +2,12 @@ import os
 import sys
 import csv
 import re
-import time
 from typing import List
 from pathvalidate import sanitize_filename
 from dataclasses import dataclass
+import requests
+from requests_toolbelt.utils import dump
+from requests.exceptions import HTTPError, Timeout
 
 
 @dataclass
@@ -212,55 +214,117 @@ def get_last_csv_row(csv_file) -> str:
     return line
 
 
-def save_download(directory, download_function, new_name, timeout=5):
+def save_attached_pdf(driver, directory, name, portal_base, download_href, timeout=20, verbose=False):
     """
-    Download a file and rename it. This is required as Selenium does not allow for the file download name to be specified.
-    Based on this: https://stackoverflow.com/a/60900048/6008271
-    :param directory: Download folder
-    :param download_function: Function to start download (eg: link.click )
-    :param new_name: Name to give downloaded file. Note: Do not include file extension as this is copied from the download.
-    :param timeout: File download timeout
-    :return: Path to downloaded file
+    Save a PDF docket attachment within a case.
+    :param driver: Selenium driver
+    :param directory: Directory to save attachment
+    :param name: Name for PDF
+    :param portal_base: Base URL for the portal. Eg: 'https://court.baycoclerk.com/BenchmarkWeb2/'
+    :param download_href: Href for the download link, which holds attributes 'rel' (cid) and 'digest'.
+    :param timeout: Time before aborting HTTP requests
+    :param verbose: Print HTTP GET/POSTs for debugging
+    :return: True (Success), False (Failure).
     """
-    files_start = os.listdir(directory)
-    download_function()
-    wait = True
-    i = 0
-    while (wait or len(os.listdir(directory)) == len(files_start)) and i < timeout * 2:
-        time.sleep(0.5)
-        wait = False
-        for file_name in os.listdir(directory):
-            if file_name.endswith('.part'):
-                wait = True
-    if i == timeout * 2:
-        print("Timeout exceeded while downloading docket attachment.")
-        return False
-    else:
-        try:
-            downloaded_file = [name for name in os.listdir(directory) if name not in files_start][0]
-            downloaded_file_path = os.path.join(directory, downloaded_file)
-            extension = downloaded_file.split('.')[-1]
-            new_file_path = parse_out_path(directory, new_name, extension)
+    # Copy Selenium's user agent and headers to requests
+    user_agent = driver.execute_script('return navigator.userAgent;')
+    s = requests.Session()
+    host = portal_base.split('/')[2]
+    s.headers.update({'User-Agent': user_agent, 'Host': host, 'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate, br', 'Accept': 'text/css,*/*;q=0.1'})
 
-            while not os.access(os.path.join(directory, downloaded_file), os.W_OK):
-                time.sleep(0.5)
+    # It took me AGES to work this out, the portal does NOT handle cookies in a standard way. This meant my requests
+    # always got 'access denied' even when I copied the cookies from Selenium to requests.
+    portal_cookies = driver.get_cookies()
+    cookie_header = ''
+    for cookie in portal_cookies:
+        cookie_header += '{}={}; '.format(cookie['name'], cookie['value'])
+    cookie_header = cookie_header[:-2]  # Remove last deliminator '; '
+
+    # Attempt to make the same HTTP requests as the website would, to be more stealthy ;)
+    cid = download_href.get_attribute('rel')
+    digest = download_href.get_attribute('digest')
+
+    try:
+        """
+        This section does a GET request for PDFViewer2. 
+        This stage may not be necessary, but I do it anyway so that later requests have a legitimate 'Referer' header.
+        """
+        if verbose:
+            print('Sending GET: PDFViewer2')
+        get_PDFViewer2_url = '{}Image.aspx/PDFViewer2?cid={}&digest={}'.format(portal_base, cid, digest)
+        # GET for PDFViewer2 with cid and digest
+        get_PDFViewer2 = requests.Request('GET', get_PDFViewer2_url, headers={
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Referer': driver.current_url,
+            'Upgrade-Insecure-Requests': '1',
+            'Cookie': cookie_header
+        })
+        prepared_get_PDFViewer2 = get_PDFViewer2.prepare()
+        response = s.send(prepared_get_PDFViewer2, timeout=timeout)
+        response.raise_for_status()  # Check HTTP status is 200 OK
+        if verbose:
+            print('Response for GET PDFViewer2 Received')
+            data = dump.dump_all(response)
+            print(data.decode('utf-8'))
+            print('--------')
+            print("Sending POST: getPDFRequestGuid")
+
+        """
+        This section does a POST for the attachment's access GUID
+        """
+        javascript_time = driver.execute_script('return String(new Date())').replace(' ', '+')
+        # Get the Javascript time formatting, as this is embedded in the POST url.
+        post_getPDFRequestGuid_url = '{}ImageAsync.aspx/GetPDFRequestGuid?cid={}&digest={}&time={}&redacted={}'.format(portal_base, cid, digest, javascript_time, False)
+        post_getPDFRequestGuid = requests.Request('POST', post_getPDFRequestGuid_url, headers={
+            'Accept': '*/*',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Origin': 'https://{}'.format(host),
+            'Referer': get_PDFViewer2_url,
+            'Cookie': cookie_header
+        })
+
+        prepared_post_getPDFRequestGuid = post_getPDFRequestGuid.prepare()
+        response = s.send(prepared_post_getPDFRequestGuid, timeout=timeout)
+        response.raise_for_status()  # Check HTTP status is 200 OK
+        guid = response.content.decode('utf-8')
+        if verbose:
+            print("Response for POST getPDFRequestGuid received. GUID is:", guid)
+            data = dump.dump_all(response)
+            print(data.decode('utf-8'))
+            print('--------')
+            print("Sending GET: GetPDF")
+
+        """
+        This last section starts the download with a GET for the PDF itself.
+        """
+        get_GetPDF_url = '{}ImageAsync.aspx/GetPDF?guid={}'.format(portal_base, guid)
+        get_GetPDF = requests.Request('GET', get_GetPDF_url, headers={
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Referer': get_PDFViewer2_url,
+            'Upgrade-Insecure-Requests': str(1),
+            'Cookie': cookie_header
+        })
+
+        prepared_get_GetPDF = get_GetPDF.prepare()
+        response = s.send(prepared_get_GetPDF, timeout=timeout)
+        response.raise_for_status()  # Check HTTP status is 200 OK
+        if verbose:
+            print("Response for GET GetPDF received.")
+
+        outfile = parse_out_path(directory, name, 'pdf')
+        with open(outfile, 'wb') as writer:
             try:
-                os.rename(downloaded_file_path, new_file_path)
-            except FileExistsError:
-                # This record has been scraped before, so the attachment already exists.
-
-                # If the new file is larger, it's possible the old one was corrupt.
-                # In this case, delete the existing attachment and replace it.
-                if os.path.getsize(downloaded_file_path) > os.path.getsize(new_file_path):
-                    os.remove(new_file_path)
-                    os.rename(downloaded_file_path, new_file_path)
-                else:
-                    print("Docket attachment already exists")
-                    os.remove(os.path.join(directory, downloaded_file))
-            return os.path.join(directory, downloaded_file)
-        except IndexError:
-            # If the download failed to start, this part will fail with an IndexError.
-            return False
+                writer.write(response.content)
+            except OSError:
+                print('Could not write attachment to file: {}'.format(outfile))
+                return False
+    except HTTPError as http_err:
+        print('HTTP error occurred while downloading attachment {}: {}'.format(name, http_err))
+        return False
+    except Timeout:
+        print('HTTP request/response timed out while downloading attachment {}'.format(name))
+        return False
 
 
 def parse_out_path(directory, filename, extension):
@@ -273,6 +337,12 @@ def parse_out_path(directory, filename, extension):
     """
     # Sanitize name to avoid illegal characters.
     filename = sanitize_filename(filename)
+    # 255 characters is the longest filename length in most filesystems
+    filename_len = len('{}.{}'.format(filename, extension))
+    if filename_len > 255:
+        excess = filename_len - 255
+        filename = filename[:-excess]
+    # Shorten overall path to 256 chars.
     total_len = len(os.path.join(directory, '{}.{}'.format(filename, extension)))
     if total_len > 256:
         # Shave excess characters from filename
