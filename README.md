@@ -59,7 +59,7 @@ This [Google Sheet](https://docs.google.com/spreadsheets/d/1yyjYV1BLFuLy32CW66zA
 * MiddleName (**PII**)
 * LastName (**PII**)
 * Suffix
-* DOB
+* DOB (**PII**)
 * Race
 * Sex
 * ArrestDate
