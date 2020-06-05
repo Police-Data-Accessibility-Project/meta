@@ -12,7 +12,7 @@ Our target user demographic is the data analytics and justice sector so they may
 
 ## Stage of Development
 
-This venture started up in early May 2020 out of an established Slack-GitHub-Discord-Reddit community of contributors, which as of the end of May 2020 numbers 2,000+ volunteers and growing. Our initial research shows similar, splintered online communities and organizations with the mission to provide law enforcement oversight. However, they often do not make their data easily accessible, are focused on a small geographic area, or are simply not up to date. 
+This venture started up in early May 2020 out of an established Slack-GitHub-Discord-Reddit community of contributors, which as of June 5th 2020, numbers 2,000+ volunteers and growing. Our initial research shows similar, splintered online communities and organizations with the mission to provide law enforcement oversight. However, they often do not make their data easily accessible, are focused on a small geographic area, or are simply not up to date. 
 
 Our international volunteer community is actively scraping data from existing sites, publicly available government sites, and making initial Freedom of Information Act (FOIA) requests to gather data via our GitHub published rules of conduct. We have a basic operating structure and wish to scale responsibly and sustainably. Our next major milestone is to establish a nonprofit entity. Our initial research into 501c organizations indicates it is no small task, and we need help to do it well.
 
