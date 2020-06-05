@@ -15,7 +15,7 @@ import utils.ScraperUtils as ScraperUtils
 from utils.ScraperUtils import Record, Charge
 
 settings = {
-    'portal-home': 'https://court.baycoclerk.com/BenchmarkWeb2/Home.aspx/Search',
+    'portal-base': 'https://court.baycoclerk.com/BenchmarkWeb2/',
     'state-code': 'FL',
     'county': 'Bay',
     'start-year': 2000,
@@ -24,7 +24,7 @@ settings = {
     'collect-pii': False,
     'connect-thresh': 10,
     'output': 'bay-county-scraped.csv',
-    'save-attachments': False,
+    'save-attachments': 'none',
     'solve-captchas': False,
     'verbose': False
 }
@@ -33,19 +33,8 @@ output_attachments = os.path.join(os.getcwd(), 'attachments')
 output_file = os.path.join(os.getcwd(), settings['output'])
 
 ffx_profile = webdriver.FirefoxOptions()
-# Allows Selenium to download to non-default location
-ffx_profile.set_preference('browser.download.folderList', 2)
-ffx_profile.set_preference('browser.download.dir', output_attachments)
-# Disable PDF browser plugin
-ffx_profile.set_preference('plugin.disable_full_page_plugin_for_types', 'application/pdf')
-ffx_profile.set_preference('pdfjs.disabled', True)
-ffx_profile.set_preference('pdfjs.enabledCache.state', False)
-# Enable autosave for PDFs.
-ffx_profile.set_preference('browser.download.manager.showWhenStarting', False)
-ffx_profile.set_preference('browser.helperApps.neverAsk.saveToDisk', 'application/pdf')
-ffx_profile.set_preference('browser.helperApps.alwaysAsk.force', False)
-# Disable animation
-ffx_profile.set_preference('browser.download.manager.showWhenStarting', False)
+# Automatically dismiss unexpected alerts.
+ffx_profile.set_capability('unexpectedAlertBehaviour', 'dismiss')
 driver = webdriver.Firefox(options=ffx_profile)
 captcha_solver = CaptchaSolver(driver)
 
@@ -53,39 +42,42 @@ captcha_solver = CaptchaSolver(driver)
 def main():
     # Parse Arguments
     args = sys.argv[1:]
-    short_args = 'p:s:c:y:e:t:pc:o:auv'
-    long_args = ['portal-home=', 'state=', 'county', 'start-year=', 'end-year=', 'missing-thresh=', 'collect-pii',
-                 'connect-thresh=', 'output=', 'save-attachments','solve-captchas', 'verbose']
+    short_args = 'p:s:c:y:e:t:pc:o:a:uv'
+    long_args = ['portal-base=', 'state=', 'county', 'start-year=', 'end-year=', 'missing-thresh=', 'collect-pii',
+                 'connect-thresh=', 'output=', 'save-attachments=','solve-captchas', 'verbose']
 
     try:
         args, vals = getopt.getopt(args, short_args, long_args)
         for arg, val in args:
-            if arg in ('p', '--portal-home'):
-                settings['portal-home'] = val
-            elif arg in ('s', '--state'):
+            if arg in ('-p', '--portal-base'):
+                settings['portal-base'] = val
+            elif arg in ('-s', '--state'):
                 settings['state-code'] = val
-            elif arg in ('c', '--county'):
+            elif arg in ('-c', '--county'):
                 settings['county'] = val
-            elif arg in ('y', '--start-year'):
+            elif arg in ('-y', '--start-year'):
                 settings['start-year'] = val
-            elif arg in ('e', '--end-year'):
+            elif arg in ('-e', '--end-year'):
                 settings['end-year'] = val
-            elif arg in ('t', '--missing-thresh'):
+            elif arg in ('-t', '--missing-thresh'):
                 settings['missing-thresh'] = val
-            elif arg in ('p', '--collect-pii'):
+            elif arg in ('-p', '--collect-pii'):
                 settings['collect-pii'] = True
-            elif arg in ('c', '--connect-thresh'):
+            elif arg in ('-c', '--connect-thresh'):
                 settings['connect-thresh'] = val
-            elif arg in ('o', '--output'):
+            elif arg in ('-o', '--output'):
                 if val.endswith('.csv') or val.endswith('.CSV'):
                     settings['output'] = val
                 else:
                     settings['output'] = '{}.csv'.format(val)
-            elif arg in ('a', '--save-attachments'):
-                settings['save-attachments'] = True
-            elif arg in ('u', '--solve-captchas'):
+            elif arg in ('-a', '--save-attachments'):
+                if val in {'none', 'filing', 'all'}:
+                    settings['save-attachments'] = True
+                else:
+                    raise ValueError('Invalid value {} for argument --save-attachments (-a)'.format(val))
+            elif arg in ('-u', '--solve-captchas'):
                 settings['solve-captchas'] = True
-            elif arg in ('v', '--verbose'):
+            elif arg in ('-v', '--verbose'):
                 settings['verbose'] = True
             else:
                 raise ValueError('Invalid argument {} provided to Scraper.'.format(arg))
@@ -152,10 +144,14 @@ def scrape_record(case_number):
     :param case_number: The current case's case number.
     """
     # Wait for court summary to load
-    try:
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'summaryAccordion')))
-    except TimeoutException:
-        raise ValueError('Summary details did not load.')
+    for i in range(settings['connect-thresh']):
+        try:
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'summaryAccordion')))
+        except TimeoutException:
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Summary details did not load for case {}.'.format(case_number))
+            else:
+                driver.refresh()
 
     # Get relevant page content
     summary_table_col1 = driver.find_elements_by_xpath('//*[@id="summaryAccordionCollapse"]/table/tbody/tr/td[1]/dl/dd')
@@ -163,10 +159,14 @@ def scrape_record(case_number):
     summary_table_col3 = driver.find_elements_by_xpath('//*[@id="summaryAccordionCollapse"]/table/tbody/tr/td[3]/dl/dd')
 
     # Wait for court dockets to load
-    try:
-        WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'gridDocketsView')))
-    except TimeoutException:
-        raise ValueError('Dockets did not load.')
+    for i in range(settings['connect-thresh']):
+        try:
+            WebDriverWait(driver, 5).until(EC.presence_of_element_located((By.ID, 'gridDocketsView')))
+        except TimeoutException:
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Dockets did not load for case {}.'.format(case_number))
+            else:
+                driver.refresh()
 
     charges_table = driver.find_elements_by_xpath('//*[@id="gridCharges"]/tbody/tr')
     docket_public_defender = driver.find_elements_by_xpath(
@@ -197,17 +197,17 @@ def scrape_record(case_number):
         Judge = summary_table_col1[0].text.strip()
 
         # Download docket attachments.
+        # Todo(OscarVanL): This could be parallelized to speed up scraping if save-attachments is set to 'all'.
         if settings['save-attachments']:
             for attachment_link in docket_attachments:
-                attachment_docket_text = attachment_link.find_element_by_xpath('./../../td[3]').text.strip()
-                # Download will start in a new
-                main_window = driver.current_window_handle
-                ScraperUtils.save_download(output_attachments, attachment_link.click,
-                                           '{}-{}'.format(case_number, attachment_docket_text))
-                driver.switch_to.window(driver.window_handles[-1])
-                driver.close()
-                driver.switch_to.window(main_window)
+                attachment_text = attachment_link.find_element_by_xpath('./../../td[3]').text.strip()
+                if settings['save-attachments'] == 'filing':
+                    if not ('CITATION FILED') in attachment_text or 'CASE FILED' in attachment_text:
+                        # Attachment is not a filing, don't download it.
+                        continue
 
+                ScraperUtils.save_attached_pdf(driver, output_attachments, '{}-{}'.format(case_number, attachment_text),
+                                               settings['portal-base'], attachment_link, 20, settings['verbose'])
     else:
         DefenseAttorney = []
         PublicDefender = []
@@ -255,9 +255,11 @@ def scrape_record(case_number):
     ArrestingOfficer = None  # Can't be found on this portal
     ArrestingOfficerBadgeNumber = None  # Can't be found on this portal
 
-    profile_link = driver.find_element_by_xpath('//*[@id="gridParties"]/tbody/tr[1]/td[2]/div[1]/a').get_attribute(
-        'href')
-    load_page(profile_link, 'Party Details:')
+    profile_link = driver.find_element_by_xpath("//table[@id='gridParties']/tbody/tr/*[contains(text(), 'DEFENDANT')]/../td[2]/div/a").get_attribute(
+       'href')
+    # profile_link = driver.find_element_by_xpath('//*[@id="gridParties"]/tbody/tr[1]/td[2]/div[1]/a').get_attribute(
+    #     'href')
+    load_page(profile_link, 'Party Details:', settings['verbose'])
 
     Suffix = None
     DOB = None  # This portal has DOB as N/A for every defendent
@@ -302,8 +304,8 @@ def search_portal(case_number):
     :param case_number: Case to search
     :return: True if a valid case was found, False if not.
     """
-    # Load portal homepage
-    load_page(settings['portal-home'], 'Search')
+    # Load portal search page
+    load_page(f"{settings['portal-base']}/Home.aspx/Search", 'Search', settings['verbose'])
     # Give some time for the captcha to load, as it does not load instantly.
     time.sleep(0.8)
 
@@ -369,12 +371,10 @@ def search_portal(case_number):
                 # Case number search did find a court case.
                 return True
         except TimeoutException:
-            search_portal(case_number)
-
-    # If this is reached, the search could not be performed in 'connect-thresh' tries.
-    raise ValueError(
-        'Page could not be loaded after {} attempts, or unexpected page title: {}'.format(settings['connect-thresh'],
-                                                                                          driver.title))
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Case page could not be loaded after {} attempts, or unexpected page title: {}'.format(settings['connect-thresh'], driver.title))
+            else:
+                search_portal(case_number)
 
 
 def select_case_input():
@@ -386,7 +386,10 @@ def select_case_input():
         try:
             WebDriverWait(driver, 5).until(EC.text_to_be_present_in_element((By.ID, 'title'), 'Case Search'))
         except TimeoutException:
-            load_page(settings['portal-home'], 'Search')
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Portal homepage could not be loaded')
+            else:
+                load_page(f"{settings['portal-base']}/Home.aspx/Search", 'Search', settings['verbose'])
 
     case_selector = driver.find_element_by_xpath(
         '//*/input[@searchtype="CaseNumber"]')
@@ -406,12 +409,14 @@ def select_case_input():
     return case_input
 
 
-def load_page(url, expectedTitle):
+def load_page(url, expectedTitle, verbose=False):
     """
     Loads a page, but tolerates intermittent connection failures up to 'connect-thresh' times.
     :param url: URL to load
     :param expectedTitle: Part of expected page title if page loads successfully. Either str or list[str].
     """
+    if verbose:
+        print('Loading page:', url)
     driver.get(url)
     for i in range(settings['connect-thresh']):
         try:
@@ -424,7 +429,12 @@ def load_page(url, expectedTitle):
             else:
                 raise ValueError('Unexpected type passed to load_page. Allowed types are str, list[str]')
         except TimeoutException:
-            driver.get(url)
+            if i == settings['connect-thresh'] - 1:
+                raise RuntimeError('Page {} could not be loaded after {} attempts. Check connction.'.format(url, settings['connect-thresh']))
+            else:
+                if verbose:
+                    print('Retrying page (attempt {}/{}): {}'.format(i+1, settings['connect-thresh'], url))
+                driver.get(url)
 
     print('Page {} could not be loaded after {} attempts. Check connection.'.format(url, settings['connect-thresh']),
           file=sys.stderr)

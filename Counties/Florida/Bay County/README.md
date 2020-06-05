@@ -31,7 +31,7 @@ Bay County uses a Benchmark portal by Pioneer Technology .
 
 |Short|Long|Default Value|Description|
 |---|---|---|---|
-|`-p`|`--portal-home`|[Portal link](https://court.baycoclerk.com/BenchmarkWeb2/Home.aspx/Search)|Set homepage for county portal.|
+|`-p`|`--portal-base`|https://court.baycoclerk.com/BenchmarkWeb2/|Base URL for the Benchmark-based portal|
 |`-s`|`--state`|FL|Postal code for state being scraped.
 |`-c`|`--county`|Bay|County being scraped.
 |`-y`|`--start-year`|2000|Earliest year to scrape as 4-digit year.|
@@ -40,7 +40,7 @@ Bay County uses a Benchmark portal by Pioneer Technology .
 |`-p`|`--collect-pii`|N/A (Off by default)|Collect Personally Identifiable Information (PII).|
 |`-c`|`--connect-thresh`|10|How many times to attempt to connect to a page before failing.
 |`-o`|`--output`|bay-county-scraped|Output CSV name. The .csv file extension is not required.
-|`-a`|`--save-attachments`|N/A (Off by default)|Save attached documents (eg: police citation scans) to 'attachments' folder. Disabled by default as these attachments contain embedded PII. 
+|`-a`|`--save-attachments`|none|Save case docket attached documents. Disabled by default as these documents contain embedded PII. Valid values: `none` / `filing` / `all`. The `filing` option saves only attachments related to the case or citation filing.
 |`-u`|`--solve-captchas`|N/A (Off by default)|Automatically solve captchas used on the portal.
 |`-v`|`--verbose`|N/A (Off by default)|Run in Verbose mode with lots of printing
 
