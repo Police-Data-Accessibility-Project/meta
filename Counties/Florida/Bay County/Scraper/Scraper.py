@@ -72,7 +72,7 @@ def main():
                     settings['output'] = '{}.csv'.format(val)
             elif arg in ('-a', '--save-attachments'):
                 if val in {'none', 'filing', 'all'}:
-                    settings['save-attachments'] = True
+                    settings['save-attachments'] = val
                 else:
                     raise ValueError('Invalid value {} for argument --save-attachments (-a)'.format(val))
             elif arg in ('-u', '--solve-captchas'):
@@ -202,10 +202,9 @@ def scrape_record(case_number):
             for attachment_link in docket_attachments:
                 attachment_text = attachment_link.find_element_by_xpath('./../../td[3]').text.strip()
                 if settings['save-attachments'] == 'filing':
-                    if not ('CITATION FILED') in attachment_text or 'CASE FILED' in attachment_text:
+                    if not ('CITATION FILED' in attachment_text or 'CASE FILED' in attachment_text):
                         # Attachment is not a filing, don't download it.
                         continue
-
                 ScraperUtils.save_attached_pdf(driver, output_attachments, '{}-{}'.format(case_number, attachment_text),
                                                settings['portal-base'], attachment_link, 20, settings['verbose'])
     else:
