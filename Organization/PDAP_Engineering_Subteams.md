@@ -1,6 +1,6 @@
-# PDAP Product Sub-teams
+# PDAP Engineering Sub-teams
 
-The Product Team will consist of three sub-teams that will work closely
+The Engineering Team will consist of three sub-teams that will work closely
 together for a streamlined process of information flow; and will also be in
 frequent contact with the Oversight Team to ensure legal compliance and best
 practices.
