@@ -350,3 +350,15 @@ def parse_out_path(directory, filename, extension):
         filename = filename[:-excess]
 
     return os.path.join(directory, '{}.{}'.format(filename, extension))
+
+
+def get_associated_cases(driver):
+    """
+    When a  case number is associated with multiple cases, the search portal returns all those cases.
+    This function returns all the associated case numbers.
+    :param driver: Selenium driver
+    :return: A set of case numbers
+    """
+    elems = driver.find_elements_by_class_name('sorting_1')
+    case_nums = set([e.text for e in elems])
+    return case_nums
