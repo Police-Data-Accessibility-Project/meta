@@ -29,6 +29,8 @@ I believe doing so will enable citizen data scientists and data journalists to t
 
 1. Finding and writing scrapers for other large counties. Prioritize counties with easier to scrape systems first. 
 
+1. Do not write scrapers for data sources that forbid systematic or algorithmic data access in their terms of service.
+
 For guidelines to contributing to scraping, please see [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ### Freedom of Information Act Requests:
