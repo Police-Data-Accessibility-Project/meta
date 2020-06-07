@@ -101,6 +101,8 @@ def begin_scrape():
         last_case_number = ScraperUtils.get_last_csv_row(output_file).split(',')[3]
         print("Continuing from last scrape (Case number: {})".format(last_case_number))
         last_year = 2000 + int(str(last_case_number)[:2])  # I know there's faster ways of doing this. It only runs once ;)
+        if not last_case_number.isnumeric():
+            last_case_number = last_case_number[:-4]
         last_case = int(str(last_case_number)[-6:])
         settings['end-year'] = last_year
         continuing = True
@@ -125,9 +127,18 @@ def begin_scrape():
             # Generate the case number to scrape
             case_number = f'{YY:02}' + f'{N:06}'
 
-            if search_portal(case_number):
+            search_result = search_portal(case_number)
+            if search_result:
                 record_missing_count = 0
-                scrape_record(case_number)
+                # if multiple associated cases are found,
+                # scrape all of them
+                if len(search_result) > 1:
+                    for case in search_result:
+                        search_portal(case)
+                        scrape_record(case)
+                # only a single case, no multiple associated cases found
+                else:
+                    scrape_record(case_number)
             else:
                 record_missing_count += 1
 
@@ -301,7 +312,7 @@ def search_portal(case_number):
     Performs a search of the portal from its home page, including selecting the case number input, solving the captcha
     and pressing Search. Also handles the captcha being solved incorrectly
     :param case_number: Case to search
-    :return: True if a valid case was found, False if not.
+    :return: A set of case number(s).
     """
     # Load portal search page
     load_page(f"{settings['portal-base']}/Home.aspx/Search", 'Search', settings['verbose'])
@@ -362,13 +373,21 @@ def search_portal(case_number):
             elif 'Search Results: CaseNumber:' in driver.title:
                 # Captcha solved correctly
                 captcha_solver.notify_last_captcha_success()
-                # Case number search did not find a court case.
-                return False
+                # Figure out the numer of cases returned
+                case_detail_tbl = driver.find_element_by_tag_name('table').text.split('\n')
+                case_count_idx = case_detail_tbl.index('CASES FOUND') + 1
+                case_count = int(case_detail_tbl[case_count_idx])
+                # Case number search found multiple cases.
+                if case_count > 1:
+                    return ScraperUtils.get_associated_cases(driver)
+                # Case number search found no cases
+                else:
+                    return set()
             elif case_number in driver.title:
                 # Captcha solved correctly
                 captcha_solver.notify_last_captcha_success()
-                # Case number search did find a court case.
-                return True
+                # Case number search did find a single court case.
+                return {case_number}
         except TimeoutException:
             if i == settings['connect-thresh'] - 1:
                 raise RuntimeError('Case page could not be loaded after {} attempts, or unexpected page title: {}'.format(settings['connect-thresh'], driver.title))
