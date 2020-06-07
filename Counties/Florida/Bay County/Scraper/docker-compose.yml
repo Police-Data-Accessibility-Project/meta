@@ -1,0 +1,20 @@
+version: '3'
+
+services:
+  scraper:
+    image: pdap-fl-bay-scraper:local
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - .:/scraper
+    environment:
+      DOCKERIZED: 'true'
+    depends_on:
+      - firefox
+
+  firefox:
+    image: selenium/standalone-firefox:3.141.59
+    ports:
+      - "4444:4444/tcp"
+    shm_size: '2gb'

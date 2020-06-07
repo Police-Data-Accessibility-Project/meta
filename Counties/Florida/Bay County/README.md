@@ -9,6 +9,8 @@ Bay County uses a Benchmark portal by Pioneer Technology .
 
 ## Installation
 
+### Local installation
+
 1. Install Python 3.8
 
 2. `cd Scraper`
@@ -26,6 +28,18 @@ Bay County uses a Benchmark portal by Pioneer Technology .
 8. Verify tesseract is installed in PATH by opening cmd and entering `tesseract`.
 
 9. `python3 Scraper.py [args]` (See below for args) 
+
+### Dockerized installation
+
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
+
+2. `cd Scraper`
+
+3. `docker-compose build scraper`
+
+4. `docker-compose run scraper bash`
+
+5. `python3 Scraper.py [args]` (See below for args)
 
 ## Args
 

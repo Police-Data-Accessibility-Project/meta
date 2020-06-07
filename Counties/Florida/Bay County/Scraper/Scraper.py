@@ -35,7 +35,15 @@ output_file = os.path.join(os.getcwd(), settings['output'])
 ffx_profile = webdriver.FirefoxOptions()
 # Automatically dismiss unexpected alerts.
 ffx_profile.set_capability('unexpectedAlertBehaviour', 'dismiss')
-driver = webdriver.Firefox(options=ffx_profile)
+
+if os.getenv('DOCKERIZED') == 'true':
+    # If running through docker-compose, use the standalone firefox container. See: docker-compose.yml#firefox
+    driver = webdriver.Remote(
+       command_executor='http://firefox:4444/wd/hub',
+       desired_capabilities=ffx_profile.to_capabilities())
+else:
+    driver = webdriver.Firefox(options=ffx_profile)
+
 captcha_solver = CaptchaSolver(driver)
 
 
