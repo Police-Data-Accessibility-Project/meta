@@ -30,7 +30,7 @@ Given the nature of this project, there are some extremely important guidelines 
 
 ## Minimum Requirements for Submission
 
-Before submitting a pull request for websites, please ensure you have reviewed the General Guidelines in the section above. In addition, good git hygeine is encouraged and appreciated - please squash-and-merge commits and have a clearly stated commit message when submitting pull requests (PR's).
+Before submitting a pull request for websites, please ensure you have reviewed the General Guidelines in the section above. In addition, good git hygeine is encouraged and appreciated - please squash-and-merge commits and have a clearly stated commit message when submitting pull requests (PR's).  Finally, please fill out the following [Questionnaire](https://forms.gle/QhBwwSpqq3pb3igt8) describing what you are scraping.  This will allow other groups to assess what infrastructure and applications must be developed to support the data you are gathering.
 
 The volunteers working this project are not paid, and are typically doing this work in our free time. Please expect some back-and-forth communication when speaking to the individuals reviewing your PR's and be patient and respectful with us. The more work you do to test and validate that your scraper has met the contribution guidelines, the less back-and-forth will be required. Where we cannot guarantee quality of scrapers, we will reject submissions until the quality checks are met.
 
