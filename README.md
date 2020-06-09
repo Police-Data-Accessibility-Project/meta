@@ -47,6 +47,8 @@ If you are looking to start building a scraper, the csv file above has the URLS 
 
 This [Google Sheet](https://docs.google.com/spreadsheets/d/1yyjYV1BLFuLy32CW66zApuEWDSFrR9Dw9y49MU7dxcQ/edit) will track datasets created by other open projects or that members of PDAP have acquired.
 
+This [Sheet](https://docs.google.com/spreadsheets/d/1MI1kFmwkEU1ThZpiQTEJr6J5FrD9Wgg_qM1g6OuansQ/edit?usp=sharing) will contain metadata on the name, type, data, and output of scrapers.
+
 ### The fields we would like to make sure to collect at a minimum from any scrape are:
 
 **For anything labeled PII: do not scrape personally identifiable information yet. We are consulting with lawyers on implications for this, but intend to do so once given the green light. 
