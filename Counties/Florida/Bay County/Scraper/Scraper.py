@@ -225,20 +225,15 @@ def scrape_record(case_number):
 
     Charges = {}
     for charge in charges_table:
-        charge_details = charge.find_elements_by_tag_name('td')
-        count = int(charge_details[0].text.strip())
-        long_desc = charge_details[1].text.strip()
-        # Statute is contained within brackets
-        if '(' in long_desc and ')' in long_desc:
-            statute = long_desc[long_desc.find('(') + 1:long_desc.find(')')]
-        else:
-            statute = None
-        description = long_desc.split('(')[0]
-        level = charge_details[2].text.strip()
-        degree = charge_details[3].text.strip()
-        # plea = charge_details[4].text.strip() # Plea is not filled out on this portal.
-        disposition = charge_details[5].text.strip()
-        disposition_date = charge_details[6].text.strip()
+        charge_cols = charge.find_elements_by_tag_name('td')
+        count = int(charge_cols[0].text.strip())
+        charge_desc = charge_cols[1].text
+        description, statute = ScraperUtils.parse_charge_statute(charge_desc)
+        level = charge_cols[2].text.strip()
+        degree = charge_cols[3].text.strip()
+        # plea = charge_cols[4].text.strip() # Plea is not filled out on this portal.
+        disposition = charge_cols[5].text.strip()
+        disposition_date = charge_cols[6].text.strip()
         offense_date = None  # Not shown on this portal
         citation_number = None  # Not shown on this portal
         Charges[count] = Charge(count, statute, description, level, degree, disposition, disposition_date, offense_date,
@@ -290,10 +285,7 @@ def scrape_record(case_number):
         MiddleName = None
         LastName = None
         if ',' in full_name:
-            name_split = full_name.split(',')[1].lstrip().split()
-            FirstName = name_split[0]
-            MiddleName = " ".join(name_split[1:])
-            LastName = full_name.split(',')[0]
+            FirstName, MiddleName, LastName = ScraperUtils.parse_name(full_name)
         else:
             # If there's no comma, it's a corporation name.
             FirstName = full_name

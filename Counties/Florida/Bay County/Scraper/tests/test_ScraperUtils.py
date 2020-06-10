@@ -7,6 +7,7 @@ class TestScraperUtils:
 
     def test_parse_plea_case_numbers_blank(self):
         assert ScraperUtils.parse_plea_case_numbers("", [1, 2, 3]) == []
+        assert ScraperUtils.parse_plea_case_numbers(None, [1, 2, 3]) == []
 
     def test_parse_plea_case_numbers__no_charge_mentioned(self):
         plea = "PLEA OF NOT GUILTY"
@@ -19,6 +20,7 @@ class TestScraperUtils:
     def test_parse_plea_case_numbers_no_charge_numbers(self):
         plea = "DEFENDANT ENTERED PLEA OF NOLO CONTENDERE SEQ: 1,2,3,4,5"
         assert ScraperUtils.parse_plea_case_numbers(plea, []) == []
+        assert ScraperUtils.parse_plea_case_numbers(plea, None) == []
 
     def test_parse_plea_case_numbers_multiple_case_numbers(self):
         plea = "DEFENDANT ENTERED PLEA OF NOLO CONTENDERE SEQ: 1,2,3,4,5"
@@ -31,6 +33,7 @@ class TestScraperUtils:
 
     def test_parse_plea_type_blank(self):
         assert ScraperUtils.parse_plea_type('') is None
+        assert ScraperUtils.parse_plea_type(None) is None
 
     def test_parse_plea_type_nolo_contendere(self):
         plea1 = 'PLEA OF NOLO CONTENDERE'
@@ -54,8 +57,41 @@ class TestScraperUtils:
         assert ScraperUtils.parse_plea_type(plea2) == 'Not Guilty'
         assert ScraperUtils.parse_plea_type(plea3) == 'Not Guilty'
 
+    def test_parse_name(self):
+        name1 = "DOE, JANE EMILY"
+        name2 = "DOE, JOHN"
+        assert ScraperUtils.parse_name(name1) == ('JANE', 'EMILY', 'DOE')
+        assert ScraperUtils.parse_name(name2) == ('JOHN', None, 'DOE')
+
+    def test_parse_name_error(self):
+        name1 = None
+        name2 = ''
+        assert ScraperUtils.parse_name(name1) == (None, None, None)
+        assert ScraperUtils.parse_name(name2) == (None, None, None)
+
+    def test_parse_charge_statute(self):
+        charge1 = '	FLEEING OR ATTEMPTING TO ELUDE (HIGH SPEED RECKLESS) (3161935 3)  '
+        charge2 = 'DRIVING WHILE LICENSE SUSPENDED OR REVOKED (32234 2a)'
+        charge3 = '	FELON IN POSSESSION OF AMMUNITION (ACTUAL POSSESSION) (79023)  '
+        charge4 = None
+        assert ScraperUtils.parse_charge_statute(charge1) == (
+            'FLEEING OR ATTEMPTING TO ELUDE (HIGH SPEED RECKLESS)', '3161935 3')
+        assert ScraperUtils.parse_charge_statute(charge2) == ('DRIVING WHILE LICENSE SUSPENDED OR REVOKED', '32234 2a')
+        assert ScraperUtils.parse_charge_statute(charge3) == (
+            'FELON IN POSSESSION OF AMMUNITION (ACTUAL POSSESSION)', '79023')
+        assert ScraperUtils.parse_charge_statute(charge4) == (None, None)
+
+    def test_parse_charge_statute_incomplete(self):
+        charge1 = '(32234 2a)'
+        charge2 = 'DRIVING WHILE LICENSE SUSPENDED OR REVOKED'
+        charge3 = ' '
+        assert ScraperUtils.parse_charge_statute(charge1) == (None, '32234 2a')
+        assert ScraperUtils.parse_charge_statute(charge2) == (charge2, None)
+        assert ScraperUtils.parse_charge_statute(charge3) == (None, None)
+
     def test_parse_defense_attorneys(self):
-        attorneys1 = ['DEFENSE ATTORNEY: DOE, JANE EMILY ASSIGNED', 'DEFENSE ATTORNEY: DOE, JOHN MICHAEL ASSIGNED', 'DEFENSE ATTORNEY: SELF, SELF ASSIGNED']
+        attorneys1 = ['DEFENSE ATTORNEY: DOE, JANE EMILY ASSIGNED', 'DEFENSE ATTORNEY: DOE, JOHN MICHAEL ASSIGNED',
+                      'DEFENSE ATTORNEY: SELF, SELF ASSIGNED']
         public_defenders1 = ['COURT APPOINTED ATTORNEY: DOE, JOHN MICHAEL ASSIGNED']
         assert ScraperUtils.parse_attorneys(attorneys1) == ['DOE, JANE EMILY', 'DOE, JOHN MICHAEL', 'SELF, SELF']
         assert ScraperUtils.parse_attorneys(public_defenders1) == ['DOE, JOHN MICHAEL']
@@ -63,8 +99,10 @@ class TestScraperUtils:
     def test_parse_defense_attorneys_invalid(self):
         invalid_test = ['', '', '']
         invalid_test2 = []
+        invalid_test3 = None
         assert ScraperUtils.parse_attorneys(invalid_test) is None
         assert ScraperUtils.parse_attorneys(invalid_test2) is None
+        assert ScraperUtils.parse_attorneys(invalid_test3) is None
 
     def test_parse_out_path_illegal_characters(self):
         filename_invalid_chars = 't<>:e"/s\\t|?n*ame'
@@ -73,8 +111,13 @@ class TestScraperUtils:
     def test_parse_out_path_valid(self):
         # Function should not affect valid length filenames and paths.
         normal_filename = 'document'
-        parsedPath = ScraperUtils.parse_out_path('C:\\Example\Path', normal_filename, 'pdf')
-        assert parsedPath == os.path.join('C:\\Example\Path', '{}.{}'.format(normal_filename, 'pdf'))
+        parsedPath = ScraperUtils.parse_out_path(r'C:\\Example\Path', normal_filename, 'pdf')
+        assert parsedPath == os.path.join(r'C:\\Example\Path', '{}.{}'.format(normal_filename, 'pdf'))
+
+    def test_filename_invalid(self):
+        filename = None
+        parsedPath = ScraperUtils.parse_out_path(r'C:\\Example\Path', filename, 'pdf')
+        assert parsedPath == os.path.join(r'C:\\Example\Path', '.pdf')
 
     def test_parse_out_path_filename_extension_shortening(self):
         # 252 characters long, but with the .pdf extension it becomes 256 characters long - one too many.

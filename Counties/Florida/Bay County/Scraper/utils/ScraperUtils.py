@@ -61,6 +61,8 @@ def parse_plea_case_numbers(plea_text: str, valid_charges: List[int]) -> List[in
     :param valid_charges: Valid charge numbers that can be referenced in the plea text
     :return: List of charge count numbers related to this plea
     """
+    plea_text = plea_text or ''
+    valid_charges = valid_charges or []
     plea_text = plea_text.strip().split()
     if len(plea_text) > 0:
         plea_counts = re.sub('[^,0-9]', '', plea_text[-1]).split(',')
@@ -72,6 +74,32 @@ def parse_plea_case_numbers(plea_text: str, valid_charges: List[int]) -> List[in
         return []
 
 
+def parse_charge_statute(charge_text: str) -> (str, str):
+    """
+    Parses the charge description text into the charge and statute code separately
+    :param charge_text: Charge description
+    :return: (Charge description, Statute code)
+    """
+    charge_text = charge_text or ''
+    charge_text = charge_text.strip()
+
+    # Find last set of parenthesis, see https://stackoverflow.com/a/42147313/6008271
+    match = re.search(r"\(([^()]*)\)$", charge_text, re.IGNORECASE)
+    statute = match.group(1) if match else None
+
+    # Find left-most parenthesis (if any)
+    lbrack_pos = charge_text.rfind('(')
+    if lbrack_pos != -1:
+        charge = charge_text[0:lbrack_pos].strip()
+    else:
+        charge = charge_text
+
+    if len(charge) == 0:
+        charge = None
+
+    return charge, statute
+
+
 def parse_attorneys(attorney_text: List[str]):
     """
     Gets a list of case docket strings and parses the attorney names from these
@@ -79,22 +107,22 @@ def parse_attorneys(attorney_text: List[str]):
     :return: List of attorney names
     """
     attorneys = []
-    for docket_text in attorney_text:
-        attorney_name = docket_text.strip()
-        if attorney_name.endswith('ASSIGNED'):
-            # Remove ' ASSIGNED'
-            attorney_name = attorney_name[:-9]
-            # Remove text before attorney name
-            attorney_name = attorney_name.split(':')[1].lstrip()
-            attorneys.append(attorney_name)
-        else:
-            print("Docket begins with DEFENSE or COURT APPOINTED but does not end with ASSIGNED. Possible edge case?",
-                  docket_text, file=sys.stderr)
+    try:
+        for docket_text in attorney_text:
+            attorney_name = docket_text.strip()
+            if attorney_name.endswith('ASSIGNED'):
+                # Remove ' ASSIGNED'
+                attorney_name = attorney_name[:-9]
+                # Remove text before attorney name
+                attorney_name = attorney_name.split(':')[1].lstrip()
+                attorneys.append(attorney_name)
 
-    if len(attorneys) == 0:
+        if len(attorneys) == 0:
+            return None
+        else:
+            return attorneys
+    except TypeError:
         return None
-    else:
-        return attorneys
 
 
 def parse_plea_type(plea_text: str):
@@ -103,6 +131,7 @@ def parse_plea_type(plea_text: str):
     :param plea_text: Plea text in case dockets
     :return: 'Not Guilty', 'Guilty', 'Nolo Contendere', or None.
     """
+    plea_text = plea_text or ''
     if 'NOT' in plea_text:
         plea = 'Not Guilty'
     elif 'GUILTY' in plea_text:
@@ -113,6 +142,24 @@ def parse_plea_type(plea_text: str):
     else:
         plea = None
     return plea
+
+
+def parse_name(fullname_text: str) -> (str, str, str):
+    """
+    Parses the first, middle and last name from a full name.
+    :param fullname_text: Defendant's fullname as a String
+    :return: (FirstName, MiddleName, LastName)
+    """
+    if not fullname_text:
+        return None, None, None
+
+    name_split = fullname_text.split(',')[1].lstrip().split()
+    FirstName = name_split[0]
+    MiddleName = " ".join(name_split[1:])
+    LastName = fullname_text.split(',')[0]
+    if MiddleName == '':
+        MiddleName = None
+    return FirstName, MiddleName, LastName
 
 
 def write_csv(output_file, record: Record, verbose=False):
@@ -167,7 +214,8 @@ def write_csv(output_file, record: Record, verbose=False):
             writer = csv.writer(outfile)
             for charge in record.charges:
                 writer.writerow(
-                    [record.id, record.state, record.county, record.portal_id, record.case_num, record.agency_report_num, record.party_id,
+                    [record.id, record.state, record.county, record.portal_id, record.case_num,
+                     record.agency_report_num, record.party_id,
                      record.first_name, record.middle_name, record.last_name, record.suffix, record.dob, record.race,
                      record.sex, record.arrest_date, record.filing_date, record.offense_date, record.division_name,
                      record.case_status, record.defense_attorney, record.public_defender, record.judge, charge.count,
@@ -188,7 +236,8 @@ def write_csv(output_file, record: Record, verbose=False):
                  'ArrestingOfficer', 'ArrestingOfficerBadgeNumber'])
             for charge in record.charges:
                 writer.writerow(
-                    [record.id, record.state, record.county, record.portal_id, record.case_num, record.agency_report_num, record.party_id,
+                    [record.id, record.state, record.county, record.portal_id, record.case_num,
+                     record.agency_report_num, record.party_id,
                      record.first_name, record.middle_name, record.last_name, record.suffix, record.dob, record.race,
                      record.sex, record.arrest_date, record.filing_date, record.offense_date, record.division_name,
                      record.case_status, record.defense_attorney, record.public_defender, record.judge, charge.count,
@@ -230,7 +279,9 @@ def save_attached_pdf(driver, directory, name, portal_base, download_href, timeo
     user_agent = driver.execute_script('return navigator.userAgent;')
     s = requests.Session()
     host = portal_base.split('/')[2]
-    s.headers.update({'User-Agent': user_agent, 'Host': host, 'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5', 'Accept-Encoding': 'gzip, deflate, br', 'Accept': 'text/css,*/*;q=0.1'})
+    s.headers.update(
+        {'User-Agent': user_agent, 'Host': host, 'Connection': 'keep-alive', 'Accept-Language': 'en-US,en;q=0.5',
+         'Accept-Encoding': 'gzip, deflate, br', 'Accept': 'text/css,*/*;q=0.1'})
 
     # It took me AGES to work this out, the portal does NOT handle cookies in a standard way. This meant my requests
     # always got 'access denied' even when I copied the cookies from Selenium to requests.
@@ -274,7 +325,8 @@ def save_attached_pdf(driver, directory, name, portal_base, download_href, timeo
         """
         javascript_time = driver.execute_script('return String(new Date())').replace(' ', '+')
         # Get the Javascript time formatting, as this is embedded in the POST url.
-        post_getPDFRequestGuid_url = '{}ImageAsync.aspx/GetPDFRequestGuid?cid={}&digest={}&time={}&redacted={}'.format(portal_base, cid, digest, javascript_time, False)
+        post_getPDFRequestGuid_url = '{}ImageAsync.aspx/GetPDFRequestGuid?cid={}&digest={}&time={}&redacted={}'.format(
+            portal_base, cid, digest, javascript_time, False)
         post_getPDFRequestGuid = requests.Request('POST', post_getPDFRequestGuid_url, headers={
             'Accept': '*/*',
             'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
