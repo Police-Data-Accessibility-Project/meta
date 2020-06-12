@@ -1,7 +1,0 @@
-selenium
-opencv-python
-pytesseract
-pytest
-pathvalidate
-requests
-requests-toolbelt
