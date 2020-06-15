@@ -10,6 +10,8 @@ primary: `security_pdap@protonmail.com`
 
 secondary: `dongately_pdap@protonmail.com`
 
+oversight: `alecakin@protonmail.com`
+
 contingency: Joint DM in Slack- `@Alec` AND `@dongately`
 
 emergency: in Slack, `@channel #information-security_general` AND `@channel #management_general`
