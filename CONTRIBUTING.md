@@ -11,7 +11,7 @@
 
 Welcome, and thank you for your interest in contributing to the Police Data Accessibility Project!
 
-There are a number of ways you can help contribute to the project. We need assistance with areas such as Scraper Development, Legal, DevOps, FOIA Requests, and Data Architecture. If you are interested in getting involved with the project beyond Scraper Development (which is the focus of this contribution guideline), please [click here to join our Slack channel](https://join.slack.com/t/policeaccessibility/shared_invite/zt-ego0gttu-MFCPQ6m9aIKiHhOqTRywMQ).
+There are a number of ways you can help contribute to the project. We need assistance with areas such as Scraper Development, Legal, DevOps, FOIA Requests, and Data Architecture. If you are interested in getting involved with the project beyond Scraper Development (which is the focus of this contribution guideline), please [click here to join our Slack channel](https://join.slack.com/t/policeaccessibility/shared_invite/zt-fb4fl1ac-~ChWSpFs2R_mDKIDyLj2Og).
 
 NOTE: We are on a free Slack instance, and the link expires every three weeks. If you attempt to join and the link is invalid, please open an issue and someone will have a new link up shortly. 
 
