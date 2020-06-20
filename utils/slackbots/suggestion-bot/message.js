@@ -13,18 +13,18 @@ const apiUrl = 'https://slack.com/api';
 
 const send = async(channel, text, thread) => { 
   var message = '';
-  var suggested = new Array();
+  var suggested = new Set();
   for (let channelId in suggestions) {
     console.log("slack channel: " + channelId);
     for (let i in suggestions[channelId]['keywords']) {
       var keyword = (suggestions[channelId]['keywords'][i]);
       console.log("keyword: " + keyword);
       if (text.includes(keyword)) {
-        suggested.push(channelId);
+        suggested.add(channelId);
       }
     }
   }
-  if (suggested.length > 0){
+  if (suggested.size > 0){
     var suggestion_text = "";
     for (let i in suggested) {
       suggestion_text += `• <#${suggested[i]}>\n`;
