@@ -15,7 +15,7 @@ const qs = require('qs');
 const signature = require('./verifySignature');
 const message = require('./message');
 const JsonDB = require('node-json-db');
-const db = new JsonDB('introductions7', true, false);  // TODO: figure out a sensible name
+const db = new JsonDB('introductions', true, false);
 
 const app = express();
 
