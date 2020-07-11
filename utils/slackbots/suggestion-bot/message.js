@@ -14,18 +14,19 @@ const apiUrl = 'https://slack.com/api';
 const send = async(channel, text, thread) => { 
   var message = '';
   var suggested = new Set();
+  text = text.toLowerCase();
   for (let channelId in suggestions) {
-    console.log("slack channel: " + channelId);
+    
     for (let i in suggestions[channelId]['keywords']) {
       var keyword = (suggestions[channelId]['keywords'][i]);
-      console.log("keyword: " + keyword);
-      if (text.includes(keyword)) {
+      if (text.includes(keyword.toLowerCase())) {
         suggested.add(channelId);
       }
     }
   }
-  if (suggested.size > 0){
-    var suggestion_text = "";
+  suggested = Array.from(suggested);
+  if (suggested.length > 0){
+    var suggestion_text = "• <#C014E2JGJAJ>\n";
     for (let i in suggested) {
       suggestion_text += `• <#${suggested[i]}>\n`;
     }
@@ -41,13 +42,16 @@ const send = async(channel, text, thread) => {
     text: message
   };
   
-  const result = await axios.post(`${apiUrl}/chat.postMessage`, qs.stringify(args));
+  let result;
   
   try {
-    console.log(result.data);
-  } catch(e) {
-    console.log(e);
+      result = await axios.post(`${apiUrl}/chat.postMessage`, qs.stringify(args));
+      return result;
+  } catch (e) {
+
+      return e;
   }
+  return result;
 };
 
 

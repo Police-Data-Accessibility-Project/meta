@@ -15,19 +15,16 @@ const crypto = require('crypto');
 const timingSafeCompare = require('tsscmp');
 
 const isVerified = (req) => { 
-  const signature = req.headers['x-slack-signature'];
-  const timestamp = req.headers['x-slack-request-timestamp'];
+  const signature = req.headers['X-Slack-Signature'];
+  const timestamp = req.headers['X-Slack-Request-Timestamp'];
   const hmac = crypto.createHmac('sha256', process.env.SLACK_SIGNING_SECRET);
   const [version, hash] = signature.split('=');
-
   // Check if the timestamp is too old
   const fiveMinutesAgo = ~~(Date.now() / 1000) - (60 * 5);
   if (timestamp < fiveMinutesAgo) return false;
-
-  hmac.update(`${version}:${timestamp}:${req.rawBody}`);
-
-  // check that the request signature matches expected value
-  return timingSafeCompare(hmac.digest('hex'), hash);
+  hmac.update(`${version}:${timestamp}:${req.body}`);
+  const hex = hmac.digest('hex');
+  return timingSafeCompare(hex, hash);
 }; 
   
 module.exports = { isVerified };

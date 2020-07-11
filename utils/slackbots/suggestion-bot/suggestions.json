@@ -1,4 +1,8 @@
-{"C013XH00WHZ": {"name": "scrapers_general", "keywords": ["python", "data", "scraping", "scrapers"]},
- "C013YDWD59Q": {"name": "foia_general", "keywords": ["legal", "law", "government", "attorney", "journalis", "foia"]},
- "C01499YU7RD": {"name": "recognition_general", "keywords": ["blog", "news feed", "art", "content creation", "copywriting", "graphic"]}}
- 
+{"C013XH00WHZ": {"name": "scrapers_general", "keywords": ["python", "data", "scraping", "scrapers", "C", "C++", "regex", "Pandas", "selenium", "api", "rest api", "dataset", "beautifulsoup", "scrapy", "spider"]},
+ "C013YDWD59Q": {"name": "foia_general", "keywords": ["legal", "law", "government", "attorney", "journalist", "foia", "information request"]},
+ "C01499YU7RD": {"name": "recognition_general", "keywords": ["blog", "news feed", "art", "content creation", "copywriting", "graphic", "branding", "marketing", "social media"]},
+ "C014T6MBJJG": {"name": "front-end_general", "keywords": ["html", "css", "Javascript", "front end", "front-end", "frontend", "bootstrap", "react", "js", "jQuery"]},
+ "C01468UAPTR": {"name": "back-end_general", "keywords": ["C#", "PHP","Ruby", "Java", ".Net", "Python","back end", "back-end", "backend","Node.js","Express.js","Ruby","REST","GO","SQL", "Rust"]},
+ "C014Q3ZT2GG": {"name": "database_general", "keywords": ["database","data architecture", "data infrastructure","MySQL", "SQL", "server", "PostgresSQL", "Oracle", "schema", "data lake", "data warehouse", "AWS", "Azure",
+ "ETL", "Scala", "Airflow", "Apache", "databricks", "neo4j", "data base", "cloud"]}
+}
