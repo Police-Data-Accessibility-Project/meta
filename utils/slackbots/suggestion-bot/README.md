@@ -1,7 +1,7 @@
 # Slack Channel Suggestions Bot
 Send messages to people as they introduce themselves in #_introduceyourself channel with suggestions for which channels to join based on keywords found in their introduction.
 
-_Updated: June, 2020_<br>
+_Updated: July, 2020_<br>
 _Published TBD_
 
 ---
@@ -17,6 +17,6 @@ The format is:
 
 ## Current status
 
-Tested and working using [glitch](https://glitch.com/edit/#!/statuesque-stream-cauliflower?path=message.js%3A55%3A0) as a test server. Need to deploy, likely to AWS or Google Cloud.
+Deployed to AWS on a personal account, should move when PDAP gets its own hosting.
 
 ---
