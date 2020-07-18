@@ -2,7 +2,7 @@ const axios = require('axios');
 const qs = require('qs');
 const suggestions = require('./suggestions');
 
-const apiUrl = 'https://slack.com/api';
+const API_URL = 'https://slack.com/api';
 
 /*
  *  Handling DM messages
@@ -11,14 +11,13 @@ const apiUrl = 'https://slack.com/api';
 
 /* Calling the chat.postMessage method to send a message */
 
-const send = async(channel, text, thread) => { 
-  var message = '';
-  var suggested = new Set();
+const send = async(channel, text, thread) => {
+  let message = '';
+  let suggested = new Set();
   text = text.toLowerCase();
   for (let channelId in suggestions) {
-    
     for (let i in suggestions[channelId]['keywords']) {
-      var keyword = (suggestions[channelId]['keywords'][i]);
+      let keyword = (suggestions[channelId]['keywords'][i]);
       if (text.includes(keyword.toLowerCase())) {
         suggested.add(channelId);
       }
@@ -26,7 +25,7 @@ const send = async(channel, text, thread) => {
   }
   suggested = Array.from(suggested);
   if (suggested.length > 0){
-    var suggestion_text = "• <#C014E2JGJAJ>\n";
+    let suggestion_text = "• <#C014E2JGJAJ>\n";
     for (let i in suggested) {
       suggestion_text += `• <#${suggested[i]}>\n`;
     }
@@ -41,17 +40,16 @@ const send = async(channel, text, thread) => {
     thread_ts: thread,
     text: message
   };
-  
+
   let result;
-  
+
   try {
-      result = await axios.post(`${apiUrl}/chat.postMessage`, qs.stringify(args));
+      result = await axios.post(`${API_URL}/chat.postMessage`, qs.stringify(args));
       return result;
   } catch (e) {
 
       return e;
   }
-  return result;
 };
 
 

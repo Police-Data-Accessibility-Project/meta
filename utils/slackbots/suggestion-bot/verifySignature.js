@@ -1,5 +1,5 @@
 /* ******************************************************************************
- * Signing Secret Varification
+ * Signing Secret Verification
  * 
  * Signing secrets replace the old verification tokens. 
  * Slack sends an additional X-Slack-Signature HTTP header on each HTTP request.

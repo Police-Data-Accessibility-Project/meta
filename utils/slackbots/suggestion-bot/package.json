@@ -1,27 +1,28 @@
 {
-  "name": "apphome-demo-note",
+  "name": "suggestion-bot",
   "version": "0.0.1",
-  "description": "Stickie note app to demonstrate App Home feature.",
+  "description": "Slack bot to suggest which channels to join based on introductions.",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
   },
   "dependencies": {
     "axios": "^0.19.2",
-    "body-parser": "^1.19.0",
-    "express": "^4.16.4",
-    "node-json-db": "^0.11.0",
     "qs": "^6.9.4",
     "tsscmp": "^1.0.6"
   },
   "engines": {
     "node": "8.x"
   },
-  "author": "Tomomi Imura <opensource@slack.com>",
+  "author": "Katie",
   "license": "MIT",
   "keywords": [
     "node",
-    "glitch",
+    "slack",
+    "bot",
     "express"
-  ]
+  ],
+  "devDependencies": {
+    "eslint": "^7.4.0"
+  }
 }
