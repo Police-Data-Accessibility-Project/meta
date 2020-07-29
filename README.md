@@ -2,7 +2,7 @@
 
 Our mission is to enable a more transparent and empowered society by making law enforcement public records open source and easily accessible to the public. 
 
-> # [Join the Slack](https://join.slack.com/t/policeaccessibility/shared_invite/zt-fb4fl1ac-~ChWSpFs2R_mDKIDyLj2Og)
+> # [Join the Slack](https://join.slack.com/t/policeaccessibility/shared_invite/zt-g0cib3le-LJ6UinAHGIEsj_6r6xNHbQ)
 
 Law enforcement data, especially at the local level, is hidden in the corners of the internet, obfuscated by bureaucracy, and served up via low quality user experiences. All this makes it difficult for citizens to access, consolidate, and make use of the data for accurate and factual inferences. Our approach empowers volunteer hunter-gatherers to contribute to a product empowering the citizenry with oversight capability.
 
