@@ -6,12 +6,11 @@ N/A at this time
 
 ## Reporting a Vulnerability
 
-primary: `security_pdap@protonmail.com`
+primary: `alec.akin@policedap.org`
 
-secondary: `dongately_pdap@protonmail.com`
+secondary: `eddie.brown@policedap.org`
 
-oversight: `alec_pdap@protonmail.com`
 
-contingency: Joint DM in Slack- `@Alec - Security Oversight Lead` AND `@Don Gately - Security Engineering Lead`
+contingency: DM in Slack- `@Alec - Chief Technology Officer`
 
-emergency: in Slack, `@channel #information-security_general` AND `@channel #management_general`
+emergency: in Slack, `@channel #leadership`
