@@ -1,4 +1,4 @@
-# [PDAP.IO](pdap.io)
+# [PDAP.IO](https://pdap.io)
 
 Our mission is to enable a more transparent and empowered society by making law enforcement public records open source and easily accessible to the public. 
 
