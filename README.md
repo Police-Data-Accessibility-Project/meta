@@ -2,6 +2,9 @@
 
 Our mission is to enable a more transparent and empowered society by making law enforcement public records open source and easily accessible to the public. 
 
+## Documentation
+[Read The Docs](https://pdap-docs.readthedocs.io/). If it needs to change, please submit a PR or make an issue in the [Docs repo](https://github.com/Police-Data-Accessibility-Project/PDAP-Docs).
+
 ## Volunteer for PDAP
 [Start here](https://docs.google.com/document/d/1Wjvv0NT3eECATJ4r8GQwEgS-sPqYFW8IGC8jvn3Bu5o/edit) if you'd like to contribute money or code. [Join the community in Slack.](https://join.slack.com/t/policeaccessibility/shared_invite/zt-ial0bvnm-D_T7R6za4aKh1f9jGUM0pg)
 
