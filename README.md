@@ -6,8 +6,10 @@ Our mission is to enable a more transparent and empowered society by making law 
 [Read The Docs](https://pdap-docs.readthedocs.io/). If it needs to change, please submit a PR or make an issue in the [Docs repo](https://github.com/Police-Data-Accessibility-Project/PDAP-Docs).
 
 ## Volunteer for PDAP
-[Start here](https://docs.google.com/document/d/1Wjvv0NT3eECATJ4r8GQwEgS-sPqYFW8IGC8jvn3Bu5o/edit) if you'd like to contribute money or code. [Join the community in Slack.](https://join.slack.com/t/policeaccessibility/shared_invite/zt-ial0bvnm-D_T7R6za4aKh1f9jGUM0pg)
+[Start here](https://pdap.atlassian.net/issues/?filter=10016) for open Volunteer Tasks, and [head here](https://pdap.atlassian.net/issues/?filter=10014) for higher-context Organizer Tasks related to infrastructure.
 
+## Closing Issues with Smart Commits
+Reference Jira issues with tags like `PDAP-101` to reference issue 101 in Jira in a discussion. You can also use [Smart Commits](https://support.atlassian.com/jira-cloud-administration/docs/integrate-with-github/) to affect Jira issue status.
 
 ## Stage of Development
 
