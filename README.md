@@ -1,5 +1,6 @@
 # Purpose
-This repo is for planning issues that don't apply to existing code in existing repos.
+You should probably just look here: https://github.com/Police-Data-Accessibility-Project
 
 # See also
 [Roadmap](https://github.com/orgs/Police-Data-Accessibility-Project/projects/24)
+[Docs](https://docs.pdap.io)
