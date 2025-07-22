@@ -1,6 +1,6 @@
 # Design Principles
 
-These are meant to guide development and approval of new code.
+These are meant to guide development and approval of new code, especially for Python repositories.
 
 Note that these design principles are not followed consistently throughout any repository, for one of several reasons:
 1. The principles were formulated, in whole or in part, after the development of the repository, and the repository should be gradually modified to meet them.
