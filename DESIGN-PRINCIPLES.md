@@ -162,17 +162,59 @@ Note that these design principles are not followed consistently throughout any r
 - Add docstrings where the logic is unavoidably complex in a manner that cannot be inferred from declaration nomenclature and type hints alone. Candidates for this include:
     - If the code has considerable side effects or calls other logic which may include considerable side effects
     - If the function is a decorator or other logic that is unavoidably unintuitive or unclear.
+    - If the function name and type hint cannot by themselves cannot satisfactorily convey the crux of the logic at a glance. 
 
 #### Example
-
-Here is an example where a docstring is useful.:
-
 ```python
     def validate_and_add_user(self, validation_token: str) -> str:
         """Validate pending user, add as full user, and return user email."""
 ```
-
 In this case, the type hint does not convey what is being returned, and changing the function name `validate_and_add_user_and_return_email` is awkward. A docstring is helpful here.  
+
+### Docstring Style
+
+- Docstrings should follow the convention of the [Google Docstring Style Guide](https://google.github.io/styleguide/pyguide.html)
+    - This style guide is chosen both for its relative lack of boilerplate as well as its wide use.
+ 
+### In-Place Function Docstrings
+
+If a function modifies a parameter in-place (for example, an array), there should be a custom `Modifies:` attribute which indicates what is modified.
+
+#### Example
+```python
+
+def heat(corn: Corn):
+    """Heat corn.
+
+    Modifies:
+        corn.popped
+    """
+    corn.temperature += 1
+    if corn.temperature > 5:
+        corn.popped = True
+```
+
+### Class Method Docstrings
+
+If a class method modifies a property internal to the class, there should be a custom `Modifies:` attribute which details what attributes are being modified. 
+
+#### Example 
+```python
+
+class Dog:
+
+    def __init__():
+        self.has_barked = false
+
+    def bark(self):
+        """Make a short, abrupt vocalization.
+
+        Modifies:
+            self.has_barked
+        """
+
+        self.stomach = food
+```
 
 # Comments
 
