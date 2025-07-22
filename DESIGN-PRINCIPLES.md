@@ -247,8 +247,13 @@ The following columns should be present in all tables unless there is a compelli
     - many-to-many: `link_apples_oranges`
 - Link tables should have unique constraints reflective of the particular relationship:
     - one-to-one: separate unique constraints on each foreign key column
-    - one-to-many: unique constraint on the `one` column
+        - `unique(apple_id)`
+        - `unique(orange_id)`
     - many-to-many: single unique constraint encompassing *both* columns
+        - `unique(apple_id, orange_id)`
+    - one-to-many: unique constraint on the `one` column, and a *separate* unique constraint for both columns
+        - `unique(apple_id)`
+        - `unique(apple_id, orange_id)`
 
 # SQLAlchemy
 
