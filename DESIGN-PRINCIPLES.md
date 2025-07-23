@@ -25,6 +25,48 @@ Note that these design principles are not followed consistently throughout any r
 - Files should generally contain only one *kind* of thing, whether that is constants files (`constants.py`), enums (`enums.py`), and so on. 
 - Classes should exist as separate files from any other logic. Only in rare situations (such as unavoidable coupling) should two or more classes exist in the same file.
 
+## Classes
+
+### Avoid deep attribute modification
+
+The more the modification of an attribute is buried in multiple levels of method calls, the harder it is for a developer to know what is happening. 
+
+One way to avoid this is to instead of having a called method modify an attribute, have that method return the attribute to be modified, and have the calling method perform the modification instead.
+
+#### Example
+
+Avoid the following
+```python
+class Fish:
+
+    def __init__:
+        self.location = 0
+
+    def move(self):
+        while self.location < 10:
+            self.swim()
+
+    def swim(self) -> None:
+        self.location += 1
+```
+
+And instead favor
+```python
+class Fish:
+
+    def __init__:
+        self.location = 0
+
+    def move(self):
+        while self.location < 10:
+            self.location = self.swim()
+
+    def swim(self) -> int:
+        return self.location + 1
+```
+
+
+
 ## Static Methods
 
 - Static methods might be less preferable to functions. A method, even a static one, implies relation between other elements in the class, whereas a function does not, and hence can be simpler to think about. 
