@@ -74,8 +74,9 @@ Note that these design principles are not followed consistently throughout any r
 - It should contain a `client` directory, which must contain a `DatabaseClient` class which all queries against the database (read or write) must utilize. 
     - The `DatabaseClient` class should be either contained within a file named `core.py`, or `sync_.py` and `async_.py`, if two clients exists for synchronous and asynchronous logic, respectively.
 
+## Tests
 
-## Test Organization
+### Test Organization
 
 - Tests should be located in a separate root-level `tests` directory 
     - This is to ensure they 
@@ -89,7 +90,7 @@ Note that these design principles are not followed consistently throughout any r
 - Fixtures in a `conftest.py` should be positioned at the lowest level possible to still be used by all relevant tests.
 - Constants, helper files, and other supporting logic should be located in files (like `constants.py`) or subdirectories (like `helpers/`) that are in the same directory as the logic being tested.
 
-## What should be tested?
+### What should be tested?
 
 - Logic which *absolutely* should be tested is logic which:
     - The user interacts with (such as endpoints)
@@ -106,6 +107,21 @@ Note that these design principles are not followed consistently throughout any r
     - Testing expensive and convoluted third party logic directly.  
         - For example, GitHub OAuth often requires a GitHub account, a browser, and multiple request redirects, and hence is quite cumbersome to set up testing infrastructure for. It is better to test the logic *up to the point that requests are sent or received from GitHub,* leveraging mocks where possible, than to test that GitHub's logic itself performs as expected -- we should expect that it does.  
 
+### Unit vs. Integration Tests 
+
+See the following wikipedia articles for definitions of [Unit](https://en.wikipedia.org/wiki/Unit_testing) and [Integration](https://en.wikipedia.org/wiki/Integration_testing) Tests, as well as the following [short blog post](https://circleci.com/blog/unit-testing-vs-integration-testing/) distinguishing between the two.
+
+Generally speaking, integration tests are preferred over unit tests because they:
+- More closely imitate production paths of code
+- Are less likely to break unnecessarily if various internal parts change (for example, if one function is replaced with another), whereas unit tests often mock internal logic and hence can break when those components change.
+- Capture a larger amount of logic in a single test and ensure all are not just working in isolation but in relation to each other.
+
+That said, unit tests become more advisable the more the logic:
+- Is part of a logic that has more substantive integration tests but has edge cases that are inefficient to evaluate more comprehensively in expensive integration tests
+- Is isolated from external dependencies (for example, a function that takes a parameter and outputs a result without any side effects).
+- Is (or is expected to be) widely used by a wide variety of other components.
+- Does not require a high number of mocks or patches to be tested (mocks and patches often easily break)
+- Is used in locations where there is high confidence the type of the input parameters is known (i.e., unlikely to pass a string where an integer is intended)
 
 ## READMEs
 
