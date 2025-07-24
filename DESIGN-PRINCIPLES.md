@@ -135,6 +135,7 @@ Note that these design principles are not followed consistently throughout any r
 ## Type Hinting
 
 - Type hints are necessary for all but the most trivial of functions (and often recommended even then).
+- If a function *does not* return anything, `-> None` should be provided as a type hint. The absence of a type hint makes it ambiguous whether it returns nothing or someone simply forgot to type hint.
 
 ## Inheritance
 
