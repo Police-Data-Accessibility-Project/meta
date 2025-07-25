@@ -4,7 +4,9 @@ These are meant to guide development and approval of new code, especially for Py
 
 Note that these design principles are not followed consistently throughout any repository, for one of several reasons:
 1. The principles were formulated, in whole or in part, after the development of the repository, and the repository should be gradually modified to meet them.
-2. The files are organized in a way which is ultimately better than the design principles, and the design principles should be modified to account for that. 
+2. The files are organized in a way which is ultimately better than the design principles, and the design principles should be modified to account for that.
+
+Finally, there are cases where an exception may be merited without modifying the design principles. For all of these recommendations, mentally add the phrase "Except in the absence of a compelling argument to the contrary". These are meant to be guiding principles and not strict requirements.
 
 ## File Nomenclature
 
@@ -250,7 +252,22 @@ The following columns should be present in all tables unless there is a compelli
     - one-to-many: unique constraint on the `one` column
     - many-to-many: single unique constraint encompassing *both* columns
 
-# SQLAlchemy
+## Function Definitions
 
-- 
+- Function and argument names should be descriptive and not generic (i.e., not `def func(a: int, b: int) -> None`, but `def update_agency_location(agency_id: int, new_location_id: int) -> None`).
 
+## Calling Functions
+
+### Keyword and Positional Arguments
+
+Using more than one positional argument (i.e., `update_agency_location(1, 2)`) risks confusing which variables are used for which arguments -- the user has to look at the function definition to see which are being used for what.
+
+Keyword arguments (i.e., `update_agency_location(agency_id=1, new_location_id=2)` provide more explicit indication of functionality.
+
+With that in mind, use the following principles when deciding whether to use keyword or positional arguments
+- When calling a function with one required argument or a method with one non-`self` argument, do not use a keyword argument and rely on the function name providing context (i.e., `get_agency_location(1)`)
+- When calling a function with more than one required argument or a method with more than one non-`self` argument, use keyword arguments for all (i.e., `update_agency_location(agency_id=1, new_location_id=2)`).
+- Optional arguments:
+  - When modified from the default, should _always_ be specified with a keyword argument.
+  - Should not be referenced in the call if the default argument is used.
+- When calling a function with one required argument and one or more non-default keyword arguments, it is acceptable to have the required argument be called as a positional argument while keeping all others keyword arguments.
