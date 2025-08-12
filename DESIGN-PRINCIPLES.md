@@ -250,6 +250,15 @@ The following columns should be present in all tables unless there is a compelli
     - one-to-many: unique constraint on the `one` column
     - many-to-many: single unique constraint encompassing *both* columns
 
+## Flag Tables
+
+Flag tables are tables that are used to indicate the presence of an attribute on a row in another table. Typically, a flag table is used where that attribute is not shared by all URLs in that table (for example, whether a URL is a Root URL).
+
+Flag tables should have the following characteristics:
+- Named with a `flag_` prefix to denote that they are flag tables.
+- Contain a foreign key that also exists as the primary key -- a separate "id" key is not required.
+- Contain a `created_at` datetime column.
+
 # SQLAlchemy
 
 - 
