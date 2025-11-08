@@ -239,12 +239,9 @@ The following columns should be present in all tables unless there is a compelli
 
 ## Link Tables
 
-- Link tables should have an `id` column that is separate from the foreign keys.
-    - Often, this column is not used, but consistency is preferred over eliminating redundancy. 
-- Link tables should have a `link_` prefix, and the table names should be singular or plural depending on the relationship. e.g.:
-    - one-to-one: `link_apple_orange`
-    - one-to-many: `link_apple_oranges`
-    - many-to-many: `link_apples_oranges`
+- Link tables should NOT have an `id` column that is separate from the foreign keys.
+    - This key is often redundant and never used -- a link table is typically referenced by the two linking tables. 
+- Link tables should always be in the format of `link_{table_a}__{table_b}`, and the tables should always be in alphabetical order, to avoid confusion when remembering which comes first.
 - Link tables should have unique constraints reflective of the particular relationship:
     - one-to-one: separate unique constraints on each foreign key column
     - one-to-many: unique constraint on the `one` column
